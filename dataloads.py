@@ -53,7 +53,7 @@ class yolodateset(Dataset):
                 lb = np.array(lb, dtype=np.float32)
             self.lab_files.append(lb)
 
-        LOGGER.info(f'im_labs len is {len(self.im_labsg)}')
+        LOGGER.info(f'im_labs len is {len(self.im_labs)}')
         
         cache_path = Path(self.im_labs[0]).parent.with_suffix('.cache')
         # try:
