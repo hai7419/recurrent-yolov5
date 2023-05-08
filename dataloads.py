@@ -54,11 +54,12 @@ class yolodateset(Dataset):
             self.lab_files.append(lb)
 
         LOGGER.info(f'im_labs len is {len(self.im_labsg)}')
+        
         cache_path = Path(self.im_labs[0]).parent.with_suffix('.cache')
-        try:
+        # try:
 
-            cache,exists = np.load(cache_path,allow_pickle=True)
-        except:
+        #     cache,exists = np.load(cache_path,allow_pickle=True)
+        # except:
             cache,exists = self.cache_labels(cache_path), False
         
         (nf,nm,ne,nc,n) = cache.pop('results')
