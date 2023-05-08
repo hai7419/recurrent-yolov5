@@ -65,8 +65,8 @@ def check_dataset(path):
     
     return{
         'path':path.parents[0],
-        'train':os.path.join(path.parents[2],'sample_data/train'),
-        'val':os.path.join(path.parents[2],'sample_data/val'),
+        'train':os.path.join(path.parents[0],'sample_data/train'),
+        'val':os.path.join(path.parents[0],'sample_data/val'),
         'test':None,
         'names':{0:'missing_hole',1:'mouse_bite',2:'open_circuit',3:'short',4:'spur',5:'spurious_copper'},
         'nc':6
