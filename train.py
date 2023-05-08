@@ -107,8 +107,8 @@ def train(hyp, opt, device):
         hyp=hyp,
         augment=False,
         pad=0,
-        rect=True,
-        workers=4,
+        rect=False,
+        workers=1,
         mosaic = False,
         shuffle=False,
         seed=0
