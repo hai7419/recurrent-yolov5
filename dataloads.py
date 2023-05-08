@@ -60,7 +60,7 @@ class yolodateset(Dataset):
 
         #     cache,exists = np.load(cache_path,allow_pickle=True)
         # except:
-            cache,exists = self.cache_labels(cache_path), False
+        cache,exists = self.cache_labels(cache_path), False
         
         (nf,nm,ne,nc,n) = cache.pop('results')
         if exists:
