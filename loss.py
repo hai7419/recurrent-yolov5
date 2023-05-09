@@ -1,6 +1,7 @@
 import torch
 import math
 import torch.nn as nn
+from general import LOGGER
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 anchors = [[10, 13, 16, 30, 33, 23], [30, 61, 62, 45, 59, 119], [116, 90, 156, 198, 373, 326]]
@@ -66,7 +67,7 @@ class compute_loss:
         
         self.hyp = hyp
         self.nc = model.nc
-        
+        LOGGER.info(f'anchors device is {self.anchors.device} model device is {self.device}')
 
     def __call__(self, p,targets,*args, **kwdsy) :
         lcls = torch.zeros(1,device=device)

@@ -81,7 +81,7 @@ def train(hyp, opt, device):
     lf = lambda x:(1 - x / epochs) * (1.0 - hyp['lrf']) + hyp['lrf']
     scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lf)
 
-    ema = ModelEMA(model)
+    # ema = ModelEMA(model)
 
     best_fitness, start_epoch = 0.0, 0
 
