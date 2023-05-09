@@ -57,7 +57,7 @@ class compute_loss:
     def __init__(self, model, autobalance=False,hyp=None) -> None:
         # Define criteria
         self.device = next(model.parameters()).device
-        self.anchors = model.anchors
+        self.anchors = model.anchors.to(device)
         self.balance = [4.0, 1.0, 0.4]
         self.BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([1], device=self.device))
         self.BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([1], device=self.device))
