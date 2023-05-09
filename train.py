@@ -41,7 +41,7 @@ def parse_opt():
     parser.add_argument('--rect',action='store_true',help='rectangular training')
     parser.add_argument('--label-smoothing',type=float,default=0.0,help='label smoothing epsilon')
     parser.add_argument('--patience', type=int, default=100, help='EarlyStopping patience (epochs without improvement)')
-    parser.add_argument('--save-period', type=int, default=2, help='Save checkpoint every x epochs (disabled if < 1)')
+    parser.add_argument('--save-period', type=int, default=10, help='Save checkpoint every x epochs (disabled if < 1)')
     return parser.parse_args()
 
 def train(hyp, opt, device):
@@ -189,6 +189,7 @@ def train(hyp, opt, device):
                 # #     ema.update(model)
                 # last_opt_step = ni
             # pbar.set_description()
+            mloss = (mloss * i + loss_items) / (i + 1)
         lr = [x['lr'] for x in optimizer.param_groups]
         scheduler.step()
 
@@ -231,7 +232,9 @@ def train(hyp, opt, device):
             'mp':results[0],
             'mr':results[1],
             'map50':results[2],
-            'mloss':mloss
+            'lbox':mloss[0],
+            'lobj':mloss[1],
+            'lcls':mloss[1],
 
 
         })
