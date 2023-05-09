@@ -16,6 +16,8 @@ from val import validate
 from copy import deepcopy
 from datetime import datetime
 from general import LOGGER
+import wandb
+import os
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0] 
@@ -139,6 +141,10 @@ def train(hyp, opt, device):
     stopper,stop = EarlyStopping(patience=opt.patience), False
     computeloss = compute_loss(model,autobalance=False,hyp=hyp)
     last_opt_step = -1
+    
+    
+    wandb.init(project = "yolov5")
+    
     for epoch in range(start_epoch,epochs):
         model.train()
 
@@ -219,7 +225,17 @@ def train(hyp, opt, device):
         if opt.save_period > 0 and epoch % opt.save_period==0:
             torch.save(ckpt,w/f'epoch{epoch}.pt')
         del ckpt
-    
+        wandb.log({
+            'epoch':epoch,
+            'fi':fi,
+            'mp':results[0],
+            'mr':results[1],
+            'map50':results[2],
+            'mloss':mloss
+
+
+        })
+    wandb.finish()
     torch.cuda.empty_cache()
     return results
     
@@ -249,6 +265,7 @@ def main(opt):
 path = r'D:\\python\\my_pcb_dataset\\train\\'
 
 hyp = {
+    
     'weight_decay':0.0005,  # optimizer weight decay
     'lr0':0.01,
     'momentum':0.937,
@@ -274,8 +291,10 @@ hyp = {
 
     }
 
+os.environ["WANDB_API_KEY"] = "67c7d73851439a0047abc953e8608567ec36bbbe"
 
 if __name__ == '__main__':
+    wandb.login()
     opt = parse_opt()
     main(opt)
 
