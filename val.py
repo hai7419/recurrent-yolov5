@@ -78,7 +78,7 @@ def validate(
                     stats.append((correct,*torch.zeros((2,0),device=device),labels[:,0]))
                 continue
             predn = pred.clone()
-            scale_boxes(im[si].shape[1:])
+            scale_boxes(im[si].shape[1:],predn[:,:4],shape,shapes[si][1])
 
             if nl:
                 tbox = xywh2xyxy(labels[:,1:5])
@@ -89,7 +89,7 @@ def validate(
 
     stats = [torch.cat(x,0).cpu().numpy() for x in zip(*stats)]
     if len(stats) and stats[0].any():
-        tp, fp, p, r, f1, ap, ap_class = ap_per_class(*stats, names=names)
+        _, _, p, r, f1, ap, ap_class = ap_per_class(*stats, names=names)
         ap50,ap=ap[:,0],ap.mean(1)
         mp,pr,map50,map = p.mean(),r.mean(),ap50.mean(),ap.mean()
     nt = np.bincount(stats[3].astype(int), minlength=nc)
@@ -107,9 +107,9 @@ def ap_per_class(
         tp, 
         conf, 
         pred_cls, 
-        target_cls, 
-        eps=1e-16, 
-        
+        target_cls,
+        names = None, 
+        eps=1e-16 
         ):
     """
         Source: https://github.com/rafaelpadilla/Object-Detection-Metrics.
@@ -118,8 +118,8 @@ def ap_per_class(
                 conf        []
                 pred_cls    []
                 target_cls  
-                plot
-                save_dir
+                names
+                eps             zuixiaozhi
         output  tp
                 fp
                 p
@@ -153,14 +153,14 @@ def ap_per_class(
         p[ci] = np.interp(-px,-conf[i],precision[:,0],left=1)
 
         for j in range(tp.shape[1]):
-            ap[ci,j],mpre,mrec = compute_ap(recall[:,j],precision[:,j])
+            ap[ci,j],_,_ = compute_ap(recall[:,j],precision[:,j])
     f1 = 2*p*r/(p + r + eps)
 
     i = smooth(f1.mean(0),0.1).argmax()
     p,r,f1 = p[:,1], r[:,i],f1[:,i]
     tp = (r*nt).round()
     fp = (tp/p(p+eps)-tp).round()
-    return tp,fp,p,r,f1,ap,
+    return tp,fp,p,r,f1,ap,unique_classes.astype(int)
 
 
 def smooth(y, f=0.05):
@@ -281,7 +281,7 @@ def clip_boxes(boxes, shape):
 
 def non_max_suppression(
         predition,
-        labels=(),
+        # labels=(),
         conf_thres=0.25,
         iou_thres=0.45,
         max_det=300        
@@ -326,7 +326,7 @@ def non_max_suppression(
         x = x[x[:,4].argsort(descending=True)[:max_nms]]
 
         c =x[:,5:6]*max_wh
-        boxes,scores = x[:,:4] + c,x[:4]
+        boxes,scores = x[:,:4] + c,x[:,4]
         i = torchvision.ops.nms(boxes=boxes,scores=scores,iou_threshold=iou_thres)
         i = i[:max_det]
         

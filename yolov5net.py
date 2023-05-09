@@ -214,6 +214,13 @@ class Net(nn.Module):
                 m.momentum = 0.03
             elif t in [nn.Hardswish, nn.LeakyReLU, nn.ReLU, nn.ReLU6, nn.SiLU]:
                 m.inplace = True
+    def _apply(self, fn):
+        self = super()._apply(fn)
+        m = self.model[-1]
+        m.stride = fn(m.stride)
+        m.grid = list(map(fn,m.grid))
+        m.anchor_grid = list(map(fn,m.anchor_grid))
+        return self
 
 
 

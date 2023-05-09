@@ -73,7 +73,7 @@ def train(hyp, opt, device):
     gs = 32
     imgsz = 640
 
-    nbs = 64    #nominal batch size
+    nbs = 4    #nominal batch size
     accumulate = max(round(nbs/batch_size),1)
     hyp['weight_decay'] *= batch_size*accumulate/nbs
     optimizer = smart_optimizer(model,opt.optimizer,hyp['lr0'],hyp['momentum'],hyp['weight_decay'])
@@ -109,7 +109,7 @@ def train(hyp, opt, device):
         hyp=hyp,
         augment=False,
         pad=0,
-        rect=False,
+        rect=True,
         workers=1,
         mosaic = False,
         shuffle=False,
@@ -190,18 +190,25 @@ def train(hyp, opt, device):
                 # last_opt_step = ni
             # pbar.set_description()
             mloss = (mloss * i + loss_items) / (i + 1)
+            mem = f'{torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0:.3g}G'
+            pbar.set_description(('%11s' * 2 + '%11.4g' * 5) %
+                                     (f'{epoch}/{epochs - 1}', mem, *mloss, targets.shape[0], imgs.shape[-1]))
+                
+
+
         lr = [x['lr'] for x in optimizer.param_groups]
         scheduler.step()
 
         final_epoch = (epoch+1 ==epochs) or stopper.possible_stop
-        results, maps = validate(
-            data=data_dict,
-            model=model,
-            names=names,
-            dataloader=val_loader,
-            compute_loss=computeloss,
-            half=False,
-        )
+        with torch.inference_mode():
+            results, maps = validate(
+                data=data_dict,
+                model=model,
+                names=names,
+                dataloader=val_loader,
+                compute_loss=computeloss,
+                half=False,
+            )
 
         fi = fitness(np.array(results).reshape(1,-1))
         stop = stopper(epoch=epoch,fitness=fi)
@@ -232,9 +239,15 @@ def train(hyp, opt, device):
             'mp':results[0],
             'mr':results[1],
             'map50':results[2],
-            'lbox':mloss[0],
-            'lobj':mloss[1],
-            'lcls':mloss[1],
+            'map':results[3],
+            'v_lbox':results[4],
+            'v_lobj':results[5],
+            'v_lcls':results[6],
+            't_lbox':mloss[0],
+            't_lobj':mloss[1],
+            't_lcls':mloss[1],
+            'lr':lr
+            
 
 
         })

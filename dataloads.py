@@ -92,7 +92,6 @@ class yolodateset(Dataset):
             self.labels = [self.labels[i] for i in irect]
             self.shapes = s[irect]  # wh
             ar = ar[irect]
-
             # Set training image shapes
             shapes = [[1, 1]] * nb
             for i in range(nb):
