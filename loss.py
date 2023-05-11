@@ -57,7 +57,7 @@ class compute_loss:
     def __init__(self, model, autobalance=False,hyp=None) -> None:
         # Define criteria
         self.device = next(model.parameters()).device
-        self.anchors = model.anchors.to(device)
+        self.anchors = model.anchors.to(self.device)
         self.balance = [4.0, 1.0, 0.4]
         self.BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([1], device=self.device))
         self.BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([1], device=self.device))
@@ -70,9 +70,9 @@ class compute_loss:
         LOGGER.info(f'anchors device is {self.anchors.device} model device is {self.device}')
 
     def __call__(self, p,targets,*args, **kwdsy) :
-        lcls = torch.zeros(1,device=device)
-        lbox = torch.zeros(1,device=device)
-        lobj = torch.zeros(1,device=device)
+        lcls = torch.zeros(1,device=self.device)
+        lbox = torch.zeros(1,device=self.device)
+        lobj = torch.zeros(1,device=self.device)
         tcls, tbox, indices, anchors = self.build_targets(p, targets)
         for i, pi in enumerate(p):
             ima,a,gi,gj = indices[i]
@@ -88,7 +88,8 @@ class compute_loss:
 
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
-
+                iou = iou.detach().clamp(0).type(tobj.dtype)
+                tobj[ima,a,gj,gi]=iou
                 if self.nc>1:
                     t = torch.full_like(pcls, self.cn, device=self.device)  # targets
                     t[range(n), tcls[i]] = self.cp
@@ -109,8 +110,8 @@ class compute_loss:
         na = 3                        #number of anchor
         nt = targets.shape[0]         #number of targets 
         tcls,tbox,indices,anch=[],[],[],[]
-        gain = torch.ones(7,device=device)              #
-        ai = torch.arange(na,device=device).float().view(na,1).repeat(1,nt)     #[na,nt]
+        gain = torch.ones(7,device=self.device)              #
+        ai = torch.arange(na,device=self.device).float().view(na,1).repeat(1,nt)     #[na,nt]
         targets = torch.cat((targets.repeat(na,1,1),ai[...,None]),2)  # [na,nt,6] #[na,nt,1]->#[na,nt,7]
         g=0.5
         off=torch.tensor(
@@ -146,7 +147,7 @@ class compute_loss:
             gij = (gxy - offsets).long()
             gi,gj=gij.T
             tcls.append(c)
-            tbox.append(torch.cat((gxy - gij, gwh), 1))
+            tbox.append(torch.cat((gxy, gwh), 1))
             indices.append((ima,a, gi.clamp_(0, shape[2] - 1), gj.clamp_(0, shape[3] - 1)))
             anch.append(anchors[a])
 

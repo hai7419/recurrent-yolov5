@@ -1,0 +1,11 @@
+
+
+      0/299         0G     0.1834    0.01957    0.03504         20        640: 100%|██████████| 1/1 [00:16<00:00, 16.89s/it
+C:\Users\wzx\anaconda3\envs\wzx\lib\site-packages\torch\optim\lr_scheduler.py:139: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 1/1 [00:13<00:00
+                   all          4         20          0          0          0          0
+
+      1/299         0G     0.2677    0.01968    0.05307         22        640: 100%|██████████| 1/1 [00:16<00:00, 16.59s/it
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 1/1 [00:13<00:00

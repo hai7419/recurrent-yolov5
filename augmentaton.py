@@ -37,11 +37,11 @@ class Albumentations:
         return im,labels
     
 
-def letterBox(im, new_shape=(640,640), color=(146,152,153),rect=True, scaleup = True, stride=32):
+def letterBox(im, new_shape=(640,640), color=(146,152,153),auto=True, scaleup = True, stride=32):
         """
         imput   im [h,w,c] 
                 new_shape [h,w] mod stride
-                rect=True,   minimum rectangle
+                auto=True,   minimum rectangle
                 scaleup = True  only scale down, do not scale up
                 stride    network stride
         output im   [h,w,c]shape is new_shape while auto false
@@ -60,7 +60,7 @@ def letterBox(im, new_shape=(640,640), color=(146,152,153),rect=True, scaleup = 
 
         new_nupad = int(round(shape[0]*r)),int(round(shape[1]*r))
         dh,dw = new_shape[0]-new_nupad[0],new_shape[1]-new_nupad[1]
-        if rect:
+        if auto:
             dw, dh = np.mod(dw, stride), np.mod(dh, stride)     
         
         

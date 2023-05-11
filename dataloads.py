@@ -29,7 +29,6 @@ class yolodateset(Dataset):
             batch_size = 4,
             hyp = None,
             augment = False,
-            mosaic = False,
             rect = False,
             stride = 32,
             pad = 0
@@ -44,7 +43,7 @@ class yolodateset(Dataset):
         self.hyp = hyp
         self.rect = rect
         self.augment = augment
-        self.mosaic = mosaic
+        self.mosaic = augment and not rect
         self.mosaic_border = [-img_size // 2, -img_size // 2]
         self.stride = stride
         for lb_file in self.im_labs:
@@ -133,13 +132,13 @@ class yolodateset(Dataset):
         shapes = None
         if mosaic:
             img, labels = self.laod_mosaic(index)
-        
+            shapes = None
 
         else:
 
             img, (h0,w0),(h, w) = self.load_img(index)
             shape = self.batch_shapes[self.batch[index]] if self.rect   else (self.im_size,self.im_size)
-            img,r,dw,dh = letterBox(im=img,new_shape=shape,rect=self.rect)
+            img,r,dw,dh = letterBox(im=img,new_shape=shape,auto=False)
 
             shapes = (h0,w0),((h/h0,w/w0),(dw,dh))
 
@@ -485,7 +484,6 @@ def create_dataloader(
         pad=0.0,
         rect=False,
         workers=4,
-        mosaic = False,
         shuffle=False,
         seed=0
     ):
@@ -498,7 +496,6 @@ def create_dataloader(
         batch_size = batch_size,
         hyp=hyp,  # hyperparameters
         augment=augment,  # augmentation
-        mosaic = mosaic,
         rect=rect,  # rectangular batches
         stride=stride,
         pad=pad
@@ -533,9 +530,9 @@ if __name__ == "__main__":
 
     hyp = {'box':0.05,
         'degrees':90.0,
-        'translate':0.1,
+        'translate':0.2,
         'scale':0.5,
-        'shear':0.0,
+        'shear':90.0,
         'fliplr':0.5,
         'mosaic':1.0,
         'mixup':0.0,
@@ -547,7 +544,7 @@ if __name__ == "__main__":
     
     
     yolov5dataloader, yolov5dataset = create_dataloader(
-        path=ROOT,
+        path=Path(path),
         imgsz=640,
         batch_size=4,
         stride=32,
@@ -561,7 +558,7 @@ if __name__ == "__main__":
     )
 
 
-    for im,lab in yolov5dataloader:
+    for im,lab,_ in yolov5dataloader:
         
         draw_targets(im,lab)
         

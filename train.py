@@ -91,11 +91,10 @@ def train(hyp, opt, device):
         batch_size=batch_size,
         stride=32,
         hyp=hyp,
-        augment=False,
+        augment=True,
         pad=0,
         rect=False,
         workers=1,
-        mosaic = True,
         shuffle=True,
         seed=0
     )
@@ -111,7 +110,6 @@ def train(hyp, opt, device):
         pad=0,
         rect=True,
         workers=1,
-        mosaic = False,
         shuffle=False,
         seed=0
     )[0]

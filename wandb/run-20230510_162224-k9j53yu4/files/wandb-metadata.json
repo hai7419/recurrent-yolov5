@@ -1,0 +1,42 @@
+{
+    "os": "Windows-10-10.0.19045-SP0",
+    "python": "3.10.10",
+    "heartbeatAt": "2023-05-10T08:22:25.428337",
+    "startedAt": "2023-05-10T08:22:24.099291",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "d:\\python\\yolov5-mysely\\train.py",
+    "codePath": "train.py",
+    "git": {
+        "remote": "https://github.com/hai7419/recurrent-yolov5.git",
+        "commit": "c70c6d9c6f6fdb4aeca287a568a833ed1bc275a9"
+    },
+    "email": "wangzhenxia18@163.com",
+    "root": "D:/python/yolov5-mysely",
+    "host": "LAPTOP-LLEFF02D",
+    "username": "wzx",
+    "executable": "C:\\Users\\wzx\\anaconda3\\envs\\wzx\\python.exe",
+    "cpu_count": 2,
+    "cpu_count_logical": 4,
+    "cpu_freq": {
+        "current": 2703.0,
+        "min": 0.0,
+        "max": 2904.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2703.0,
+            "min": 0.0,
+            "max": 2904.0
+        }
+    ],
+    "disk": {
+        "total": 919.8339805603027,
+        "used": 718.1354217529297
+    },
+    "memory": {
+        "total": 7.887916564941406
+    }
+}
