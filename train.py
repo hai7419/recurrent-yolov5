@@ -33,7 +33,7 @@ def parse_opt():
     parser.add_argument('--resume', nargs='?', const=True, default=False, help='resume most recent training')
     parser.add_argument('--epochs',type=int,default=300,help='total training epochs')
     parser.add_argument('--imgsz',type=int,default=640,help='train val image size pixels')
-    parser.add_argument('--batch_size',type=int,default=4,help='total batch size')
+    parser.add_argument('--batch_size',type=int,default=2,help='total batch size')
     parser.add_argument('--workers',type=int,default=1,help='max dataloader workers')
     parser.add_argument('--exist_ok',action='store_true',help='existing project name ok,do not increment')
     parser.add_argument('--data',type=str,default=ROOT/'data/coco128.yaml',help='dataset.yaml path')
@@ -81,7 +81,7 @@ def train(hyp, opt, device):
     lf = lambda x:(1 - x / epochs) * (1.0 - hyp['lrf']) + hyp['lrf']
     scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lf)
 
-    # ema = ModelEMA(model)
+    ema = ModelEMA(model)
 
     best_fitness, start_epoch = 0.0, 0
 
@@ -178,6 +178,8 @@ def train(hyp, opt, device):
                 optimizer.step()
                 optimizer.zero_grad()
                 last_opt_step = ni
+                if ema:
+                    ema.update(model)
                 # scaler.unscale_(optimizer)
                 # torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
                 # scaler.step(optimizer)  # optimizer.step
@@ -196,12 +198,13 @@ def train(hyp, opt, device):
 
         lr = [x['lr'] for x in optimizer.param_groups]
         scheduler.step()
-
+        ema.update_attr(model,include=['yaml', 'nc', 'hyp', 'names', 'stride', 'class_weights'])
+        
         final_epoch = (epoch+1 ==epochs) or stopper.possible_stop
         with torch.inference_mode():
             results, maps = validate(
                 data=data_dict,
-                model=model,
+                model=ema.ema,
                 names=names,
                 dataloader=val_loader,
                 compute_loss=computeloss,
@@ -213,7 +216,7 @@ def train(hyp, opt, device):
 
         if fi > best_fitness:
             best_fitness = fi
-        log_vals = list(mloss)+list(results)+lr
+        
 
         
         ckpt = {
@@ -245,9 +248,6 @@ def train(hyp, opt, device):
             't_lobj':mloss[1],
             't_lcls':mloss[1],
             'lr':lr
-            
-
-
         })
     wandb.finish()
     torch.cuda.empty_cache()
