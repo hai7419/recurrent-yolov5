@@ -252,7 +252,7 @@ def train(hyp, opt, device):
             'v_lcls':results[6],
             't_lbox':mloss[0],
             't_lobj':mloss[1],
-            't_lcls':mloss[1],
+            't_lcls':mloss[2],
             'lr0':lr[0],
             'lr1':lr[1],
             'lr2':lr[2]
