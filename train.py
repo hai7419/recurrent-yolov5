@@ -253,7 +253,10 @@ def train(hyp, opt, device):
             't_lbox':mloss[0],
             't_lobj':mloss[1],
             't_lcls':mloss[1],
-            'lr':lr
+            'lr0':lr[0],
+            'lr1':lr[1],
+            'lr2':lr[2]
+
         })
     wandb.finish()
     torch.cuda.empty_cache()
