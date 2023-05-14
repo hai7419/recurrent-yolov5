@@ -18,7 +18,7 @@ from datetime import datetime
 from general import LOGGER
 import wandb
 import os
-
+from PIL import Image,ImageDraw,ExifTags,ImageOps
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0] 
 
@@ -31,7 +31,7 @@ def parse_opt():
     parser.add_argument('--hyp', type=str, default=ROOT/'hyp.scratch.yaml')
     parser.add_argument('--project',type=str,default=ROOT/'run/train',help='save to project name')
     parser.add_argument('--resume', nargs='?', const=True, default=False, help='resume most recent training')
-    parser.add_argument('--epochs',type=int,default=300,help='total training epochs')
+    parser.add_argument('--epochs',type=int,default=500,help='total training epochs')
     parser.add_argument('--imgsz',type=int,default=640,help='train val image size pixels')
     parser.add_argument('--batch_size',type=int,default=2,help='total batch size')
     parser.add_argument('--workers',type=int,default=1,help='max dataloader workers')
@@ -107,12 +107,14 @@ def train(hyp, opt, device):
         stride=32,
         hyp=hyp,
         augment=False,
-        pad=0,
+        pad=0.5,
         rect=True,
         workers=1,
         shuffle=False,
         seed=0
     )[0]
+
+    model.half().float()
     nl = 3     # number of detection layers (to scale hyps)
     hyp['box'] *= 3/nl
     hyp['cls'] *= nc/80*3/nl
@@ -155,6 +157,10 @@ def train(hyp, opt, device):
         pbar = tqdm(pbar,total=nb,bar_format=TQDM_BAR_FORMAT)
         optimizer.zero_grad()
         for i,(imgs,targets,_) in pbar:
+            
+            
+            #draw_targets(imgs,targets)
+
             ni = i+nb*epoch
             imgs = imgs.to(device,non_blocking=True).float()/255
 
@@ -164,30 +170,30 @@ def train(hyp, opt, device):
                 for j,x in enumerate(optimizer.param_groups):
                     pass
 
-            pred = model(imgs)
-            loss, loss_items = computeloss(pred,targets.to(device))
-            loss.backward()
-            # with torch.cuda.amp.autocast(False):
-            #     pred = model(imgs)
-            #     loss, loss_items = computeloss(pred,targets.to(device))
+            # pred = model(imgs)
+            # loss, loss_items = computeloss(pred,targets.to(device))
+            # loss.backward()
+            with torch.cuda.amp.autocast(False):
+                pred = model(imgs)
+                loss, loss_items = computeloss(pred,targets.to(device))
 
-            # scaler.scale(loss).backward()
-            if ni - last_opt_step  > accumulate:
+            scaler.scale(loss).backward()
+            if ni - last_opt_step  >= accumulate:
                 
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)
-                optimizer.step()
+                # torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)
+                # optimizer.step()
+                # optimizer.zero_grad()
+                # last_opt_step = ni
+                # if ema:
+                #     ema.update(model)
+                scaler.unscale_(optimizer)
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+                scaler.step(optimizer)  # optimizer.step
+                scaler.update()
                 optimizer.zero_grad()
-                last_opt_step = ni
                 if ema:
                     ema.update(model)
-                # scaler.unscale_(optimizer)
-                # torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
-                # scaler.step(optimizer)  # optimizer.step
-                # scaler.update()
-                # optimizer.zero_grad()
-                # # if ema:
-                # #     ema.update(model)
-                # last_opt_step = ni
+                last_opt_step = ni
             # pbar.set_description()
             mloss = (mloss * i + loss_items) / (i + 1)
             mem = f'{torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0:.3g}G'
@@ -257,6 +263,39 @@ def train(hyp, opt, device):
 
 
 
+class_name = ['missing_hole','mouse_bite','open_circuit','short','spur','spurious_copper']
+
+def xywh2xyxy(x,w=640,h=640):
+    y = x.clone() if isinstance(x, torch.Tensor) else np.copy(x)
+    y[..., 2] = w * (x[..., 2] - x[..., 4] / 2)   # top left x
+    y[..., 3] = h * (x[..., 3] - x[..., 5] / 2)   # top left y
+    y[..., 4] = w * (x[..., 2] + x[..., 4] / 2)   # bottom right x
+    y[..., 5] = h * (x[..., 3] + x[..., 5] / 2)   # bottom right
+    return y
+
+def draw_targets(img,labs):
+    """
+    input   img [batch channel h w ] type:tensor
+            labs [class,xywh]  type:tensor
+    output  draw image and target
+    
+    """    
+    shape = img.shape
+    labs = xywh2xyxy(labs,shape[2],shape[3])
+
+    for i in range(img.shape[0]):
+        # lb = torch.ones(labs.shape)
+        j = labs[:,0]==i
+        lb = labs[j]
+        im = Image.fromarray(img[i].numpy().transpose(1,2,0))
+        draw = ImageDraw.Draw(im)
+        for k in range(lb.shape[0]):
+
+            draw.rectangle(lb[k,2:].numpy(),outline='red')
+            draw.text(lb[k,2:4].numpy().astype(np.uint)+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
+        del draw
+        im.show()
+        im.save('D:\python\yolov5-mysely\ccc.jpg',format='png')
 
     
 
@@ -289,7 +328,7 @@ hyp = {
     'cls':0.5,          # cls loss gain
     'obj':1.0,          # obj loss gain
 
-    'degrees':90.0,
+    'degrees':0.0,
     'translate':0.1,
     'scale':0.5,
     'shear':0.0,

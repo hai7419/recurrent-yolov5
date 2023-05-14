@@ -128,7 +128,7 @@ class yolodateset(Dataset):
     def __getitem__(self, index):
         
         hyp = self.hyp
-        mosaic = self.mosaic and random.random() < hyp['mosaic']
+        mosaic = self.mosaic #and random.random() < hyp['mosaic']
         shapes = None
         if mosaic:
             img, labels = self.laod_mosaic(index)
@@ -305,7 +305,19 @@ class yolodateset(Dataset):
         y[..., 2] = w * (x[..., 0] + x[..., 2] / 2) + dw  # bottom right x
         y[..., 3] = h * (x[..., 1] + x[..., 3] / 2) + dh  # bottom right
         return y
-    def xyxy2xywhn(self,x,w=640, h=640):
+    def xyxy2xywhn(self,x,w=640, h=640,clip = True,eps=1E-3):
+        if clip:
+            
+            if isinstance(x, torch.Tensor):  # faster individually
+                x[..., 0].clamp_(0, w-eps)  # x1
+                x[..., 1].clamp_(0, h-eps)  # y1
+                x[..., 2].clamp_(0, w-eps)  # x2
+                x[..., 3].clamp_(0, h-eps)  # y2
+            else:  # np.array (faster grouped)
+                x[..., [0, 2]] = x[..., [0, 2]].clip(0, w-eps)  # x1, x2
+                x[..., [1, 3]] = x[..., [1, 3]].clip(0, h-eps)
+        
+        
         y = x.clone() if isinstance(x, torch.Tensor) else np.copy(x)
         y[..., 0] = ((x[..., 0] + x[..., 2]) / 2) / w  # x center
         y[..., 1] = ((x[..., 1] + x[..., 3]) / 2) / h  # y center
@@ -506,11 +518,11 @@ def create_dataloader(
     nw = min([os.cpu_count() // max(nd, 1), batch_size if batch_size > 1 else 0, workers])  # number of workers
      
     generator = torch.Generator()
-    generator.manual_seed(6148914691236517205 + seed )
+    generator.manual_seed(6148914691236517205 + seed -1)
     return DataLoader(dataset,
                   batch_size=batch_size,
                   shuffle=shuffle,
-                  num_workers=nw,
+                  num_workers=1,
                   sampler=None,
                   pin_memory=PIN_MEMORY,
                   collate_fn= yolodateset.collate_fn,

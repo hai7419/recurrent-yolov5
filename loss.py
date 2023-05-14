@@ -147,7 +147,7 @@ class compute_loss:
             gij = (gxy - offsets).long()
             gi,gj=gij.T
             tcls.append(c)
-            tbox.append(torch.cat((gxy, gwh), 1))
+            tbox.append(torch.cat((gxy-gij, gwh), 1))
             indices.append((ima,a, gi.clamp_(0, shape[2] - 1), gj.clamp_(0, shape[3] - 1)))
             anch.append(anchors[a])
 

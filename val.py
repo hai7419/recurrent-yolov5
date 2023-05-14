@@ -144,7 +144,7 @@ def ap_per_class(
         if n_p == 0 or n_l == 0 :
             continue
         fpc = (1-tp[i]).cumsum(0)
-        tpc = tp[i].cumsun(0)
+        tpc = tp[i].cumsum(0)
 
         recall = tpc / (n_l+eps)
         r[ci] = np.interp(-px,-conf[i],recall[:,0],left=0)

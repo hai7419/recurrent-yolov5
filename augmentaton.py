@@ -37,7 +37,7 @@ class Albumentations:
         return im,labels
     
 
-def letterBox(im, new_shape=(640,640), color=(146,152,153),auto=True, scaleup = True, stride=32):
+def letterBox(im, new_shape=(640,640), color=(114,114,114),auto=True, scaleup = False, stride=32):
         """
         imput   im [h,w,c] 
                 new_shape [h,w] mod stride
@@ -58,8 +58,8 @@ def letterBox(im, new_shape=(640,640), color=(146,152,153),auto=True, scaleup = 
              r= min(r,1.0)
        
 
-        new_nupad = int(round(shape[0]*r)),int(round(shape[1]*r))
-        dh,dw = new_shape[0]-new_nupad[0],new_shape[1]-new_nupad[1]
+        new_nupad = int(round(shape[1]*r)),int(round(shape[0]*r))
+        dh,dw = new_shape[0]-new_nupad[1],new_shape[1]-new_nupad[0]
         if auto:
             dw, dh = np.mod(dw, stride), np.mod(dh, stride)     
         
@@ -67,7 +67,7 @@ def letterBox(im, new_shape=(640,640), color=(146,152,153),auto=True, scaleup = 
         dh /= 2
         dw /= 2
 
-        if shape[:] != new_nupad:
+        if shape[::-1] != new_nupad:
             im = cv2.resize(im, new_nupad,interpolation=cv2.INTER_LINEAR)
         top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
         left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
@@ -152,9 +152,9 @@ def randon_perspective(
     M = T @ S @ R @ P @ C  # order of operations (right to left) is IMPORTANT
     if (border[0] != 0) or (border[1] != 0) or (M != np.eye(3)).any():  # image changed
         if perspective:
-            im = cv2.warpPerspective(im, M, dsize=(width, height), borderValue=(146,152,153))
+            im = cv2.warpPerspective(im, M, dsize=(width, height), borderValue=(114,114,114))
         else:  # affine
-            im = cv2.warpAffine(im, M[:2], dsize=(width, height), borderValue=(146,152,153))
+            im = cv2.warpAffine(im, M[:2], dsize=(width, height), borderValue=(114,114,114))
 
 
     # Transform label coordinates
