@@ -37,8 +37,8 @@ class yolodateset(Dataset):
         super().__init__()
         self.path = path
         self.im_size = img_size
-        self.im_files = glob.glob(os.path.join(self.path,'images\\*'))
-        self.im_labs =  glob.glob(os.path.join(self.path,'labs\\*'))
+        self.im_files = glob.glob(os.path.join(self.path,'images/*'))
+        self.im_labs =  glob.glob(os.path.join(self.path,'labs/*'))
         self.lab_files = []
         self.hyp = hyp
         self.rect = rect
