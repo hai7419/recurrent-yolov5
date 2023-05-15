@@ -65,10 +65,10 @@ def check_dataset(path):
     
     return{
         'path':path.parents[0],
-        'train':Path('/content/sample_data/train/'),          #os.path.join(path.parents[0],'/train'),
-        'val':Path('/content/sample_data/val/'),             #             os.path.join(path.parents[0],'/val'),
-        #'train':os.path.join(path.parents[0],'train'),
-        #'val':os.path.join(path.parents[0],'val'),
+        #'train':Path('/content/sample_data/train/'),          #os.path.join(path.parents[0],'/train'),
+        #'val':Path('/content/sample_data/val/'),             #             os.path.join(path.parents[0],'/val'),
+        'train':os.path.join(path.parents[0],'train'),
+        'val':os.path.join(path.parents[0],'val'),
         'test':None,
         'names':{0:'missing_hole',1:'mouse_bite',2:'open_circuit',3:'short',4:'spur',5:'spurious_copper'},
         'nc':6

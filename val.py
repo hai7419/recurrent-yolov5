@@ -157,7 +157,7 @@ def ap_per_class(
     f1 = 2*p*r/(p + r + eps)
 
     i = smooth(f1.mean(0),0.1).argmax()
-    p,r,f1 = p[:,1], r[:,i],f1[:,i]
+    p,r,f1 = p[:,i], r[:,i],f1[:,i]
     tp = (r*nt).round()
     fp = (tp/(p+eps)-tp).round()
     return tp,fp,p,r,f1,ap,unique_classes.astype(int)
