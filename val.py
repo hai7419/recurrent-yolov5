@@ -31,7 +31,7 @@ def validate(
     model.eval()  #configure Dropout和BatchNorm
     cuda = device.type != 'cpu'
     nc = int(data['nc'])
-    iouv = torch.linspace(0.5,.095,10,device=device)
+    iouv = torch.linspace(0.5,0.95,10,device=device)
     niou = iouv.numel()
 
     seen = 0
