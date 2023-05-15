@@ -91,7 +91,7 @@ def validate(
     if len(stats) and stats[0].any():
         _, _, p, r, f1, ap, ap_class = ap_per_class(*stats, names=names)
         ap50,ap=ap[:,0],ap.mean(1)
-        mp,pr,map50,map = p.mean(),r.mean(),ap50.mean(),ap.mean()
+        mp,mr,map50,map = p.mean(),r.mean(),ap50.mean(),ap.mean()
     nt = np.bincount(stats[3].astype(int), minlength=nc)
     pf = '%22s' + '%11i' * 2 + '%11.3g' * 4  # print format
     LOGGER.info(pf % ('all', seen, nt.sum(), mp, mr, map50, map))
