@@ -172,7 +172,10 @@ def train(hyp, opt, device):
 
 
             if epoch < 3:
-                print(pred[0])
+                print(targets[0])
+                print(targets[1])
+                print(imgs[0,0,0])
+            
             pred = model(imgs)
             
 
