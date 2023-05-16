@@ -173,7 +173,7 @@ def train(hyp, opt, device):
             pred = model(imgs)
             if epoch < 3:
                 print(pred[0])
-                
+
             loss, loss_items = computeloss(pred,targets.to(device))
             loss.backward()
             # with torch.cuda.amp.autocast(False):
@@ -300,7 +300,7 @@ def draw_targets(img,labs):
         for k in range(lb.shape[0]):
 
             draw.rectangle(lb[k,2:].numpy(),outline='red')
-            draw.text(lb[k,2:4].numpy().astype(np.uint)+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
+            # draw.text(lb[k,2:4].numpy().astype(np.uint)+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
         del draw
         # im.show()
         print(im.mode)
