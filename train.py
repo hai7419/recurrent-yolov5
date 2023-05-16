@@ -67,7 +67,7 @@ def train(hyp, opt, device):
     nc = data_dict['nc']
     names = data_dict['names']
 
-    model = Net(ch=3,nc=6,anchors=hyp.get('anchors')).to(device)
+    model = Net(ch=3,nc=6,anchors=None).to(device)
 
 
     gs = 32
