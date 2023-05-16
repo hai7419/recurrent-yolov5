@@ -42,6 +42,9 @@ def parse_opt():
     parser.add_argument('--label-smoothing',type=float,default=0.0,help='label smoothing epsilon')
     parser.add_argument('--patience', type=int, default=100, help='EarlyStopping patience (epochs without improvement)')
     parser.add_argument('--save-period', type=int, default=10, help='Save checkpoint every x epochs (disabled if < 1)')
+    parser.add_argument('--cache', type=str, nargs='?', const='ram', help='image --cache ram/disk')
+    parser.add_argument('--image-weights', action='store_true', help='use weighted image selection for training')
+    
     return parser.parse_args()
 
 def train(hyp, opt, device):
@@ -92,9 +95,11 @@ def train(hyp, opt, device):
         stride=32,
         hyp=hyp,
         augment=True,
+        cache=None if opt.cache == 'val' else opt.cache,
         pad=0,
         rect=False,
         workers=1,
+        image_weights = opt.image_weights,
         shuffle=True,
         seed=0
     )
@@ -156,7 +161,7 @@ def train(hyp, opt, device):
 
         pbar = tqdm(pbar,total=nb,bar_format=TQDM_BAR_FORMAT)
         optimizer.zero_grad()
-        for i,(imgs,targets,_) in pbar:
+        for i,(imgs,targets,_,_) in pbar:
             
             if epoch<3:
                 draw_targets(imgs,targets)

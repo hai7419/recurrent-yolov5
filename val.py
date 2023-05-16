@@ -45,7 +45,7 @@ def validate(
 
     pbar = tqdm(dataloader, desc=s, bar_format=TQDM_BAR_FORMAT)
 
-    for batch_i,(im,targets,shapes) in enumerate(pbar):
+    for batch_i,(im,targets,_,shapes) in enumerate(pbar):
         if cuda:
             im = im.to(device,non_blocking=True)
             targets = targets.to(device)
