@@ -158,8 +158,8 @@ def train(hyp, opt, device):
         optimizer.zero_grad()
         for i,(imgs,targets,_) in pbar:
             
-            
-            #draw_targets(imgs,targets)
+            if epoch<3:
+                draw_targets(imgs,targets)
 
             ni = i+nb*epoch
             imgs = imgs.to(device,non_blocking=True).float()/255
@@ -299,8 +299,9 @@ def draw_targets(img,labs):
             draw.rectangle(lb[k,2:].numpy(),outline='red')
             draw.text(lb[k,2:4].numpy().astype(np.uint)+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
         del draw
-        im.show()
-        im.save('D:\python\yolov5-mysely\ccc.jpg',format='png')
+        # im.show()
+        print(im.mode)
+        # im.save('D:\python\yolov5-mysely\ccc.jpg',format='png')
 
     
 
