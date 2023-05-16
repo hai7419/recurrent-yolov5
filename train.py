@@ -167,10 +167,13 @@ def train(hyp, opt, device):
             if ni <= nw:
                 xi = [0, nw]
                 accumulate = max(1,np.interp(ni,xi,[1,nbs/batch_size]).round())
-                for j,x in enumerate(optimizer.param_groups):
-                    pass
+                # for j,x in enumerate(optimizer.param_groups):
+                #     pass
 
             pred = model(imgs)
+            if epoch < 3:
+                print(pred[0])
+                
             loss, loss_items = computeloss(pred,targets.to(device))
             loss.backward()
             # with torch.cuda.amp.autocast(False):
