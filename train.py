@@ -119,6 +119,20 @@ def train(hyp, opt, device):
         seed=0
     )[0]
 
+    train_val_loader = create_dataloader(
+        path=train_path,
+        imgsz=imgsz,
+        batch_size=batch_size,
+        stride=32,
+        hyp=hyp,
+        augment=False,
+        pad=0.5,
+        rect=True,
+        workers=1,
+        shuffle=False,
+        seed=0
+    )
+
     model.half().float()
     nl = 3     # number of detection layers (to scale hyps)
     hyp['box'] *= 3/nl
@@ -223,7 +237,7 @@ def train(hyp, opt, device):
 
         final_epoch = (epoch+1 ==epochs) or stopper.possible_stop
         with torch.inference_mode():
-            results, maps = validate(
+            val_results, _ = validate(
                 data=data_dict,
                 model=ema.ema,
                 names=names,
@@ -231,6 +245,16 @@ def train(hyp, opt, device):
                 compute_loss=computeloss,
                 half=False,
             )
+
+            train_results, _ = validate(
+                data=data_dict,
+                model=ema.ema,
+                names=names,
+                dataloader=train_val_loader,
+                compute_loss=computeloss,
+                half=False,
+            )
+            
 
         fi = fitness(np.array(results).reshape(1,-1))
         stop = stopper(epoch=epoch,fitness=fi)
@@ -257,14 +281,23 @@ def train(hyp, opt, device):
         del ckpt
         wandb.log({
             'epoch':epoch,
-            'fi':fi,
-            'mp':results[0],
-            'mr':results[1],
-            'map50':results[2],
-            'map':results[3],
-            'v_lbox':results[4],
-            'v_lobj':results[5],
-            'v_lcls':results[6],
+            'v_mp':val_results[0],
+            'v_mr':val_results[1],
+            'v_map50':val_results[2],
+            'v_map':val_results[3],
+            'v_lbox':val_results[4],
+            'v_lobj':val_results[5],
+            'v_lcls':val_results[6],
+            'train_mp':train_results[0],
+            'train_mr':train_results[1],
+            'train_map50':train_results[2],
+            'train_map':train_results[3],
+            'train_lbox':train_results[4],
+            'train_lobj':train_results[5],
+            'train_lcls':train_results[6],
+
+
+
             't_lbox':mloss[0],
             't_lobj':mloss[1],
             't_lcls':mloss[2],
