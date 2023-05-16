@@ -177,8 +177,8 @@ def train(hyp, opt, device):
         optimizer.zero_grad()
         for i,(imgs,targets,_,_) in pbar:
             
-            if epoch<3:
-                draw_targets(imgs,targets)
+            # if epoch<3:
+            #     draw_targets(imgs,targets)
 
             ni = i+nb*epoch
             imgs = imgs.to(device,non_blocking=True).float()/255
@@ -190,10 +190,10 @@ def train(hyp, opt, device):
                 #     pass
 
 
-            if epoch < 3:
-                print(targets[0])
-                print(targets[1])
-                print(imgs[0,0,0])
+            # if epoch < 3:
+            #     print(targets[0])
+            #     print(targets[1])
+            #     print(imgs[0,0,0])
             
             pred = model(imgs)
             
