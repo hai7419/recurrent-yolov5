@@ -131,7 +131,7 @@ def train(hyp, opt, device):
         workers=1,
         shuffle=False,
         seed=0
-    )
+    )[0]
 
     model.half().float()
     nl = 3     # number of detection layers (to scale hyps)
