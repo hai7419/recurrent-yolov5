@@ -10,7 +10,7 @@ from torch.optim import lr_scheduler
 from dataloads import create_dataloader
 import numpy as np
 import time
-from loss import compute_loss
+from loss import ComputeLoss
 from tqdm import  tqdm
 from val import validate
 from copy import deepcopy
@@ -139,7 +139,7 @@ def train(hyp, opt, device):
     scaler = torch.cuda.amp.GradScaler(enabled=False)
 
     stopper,stop = EarlyStopping(patience=opt.patience), False
-    computeloss = compute_loss(model,autobalance=False,hyp=hyp)
+    computeloss = ComputeLoss(model,autobalance=False)
     last_opt_step = -1
     
     
@@ -170,30 +170,30 @@ def train(hyp, opt, device):
                 for j,x in enumerate(optimizer.param_groups):
                     pass
 
-            # pred = model(imgs)
-            # loss, loss_items = computeloss(pred,targets.to(device))
-            # loss.backward()
-            with torch.cuda.amp.autocast(False):
-                pred = model(imgs)
-                loss, loss_items = computeloss(pred,targets.to(device))
+            pred = model(imgs)
+            loss, loss_items = computeloss(pred,targets.to(device))
+            loss.backward()
+            # with torch.cuda.amp.autocast(False):
+            #     pred = model(imgs)
+            #     loss, loss_items = computeloss(pred,targets.to(device))
 
-            scaler.scale(loss).backward()
+            # scaler.scale(loss).backward()
             if ni - last_opt_step  >= accumulate:
                 
-                # torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)
-                # optimizer.step()
-                # optimizer.zero_grad()
-                # last_opt_step = ni
-                # if ema:
-                #     ema.update(model)
-                scaler.unscale_(optimizer)
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
-                scaler.step(optimizer)  # optimizer.step
-                scaler.update()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)
+                optimizer.step()
                 optimizer.zero_grad()
+                last_opt_step = ni
                 if ema:
                     ema.update(model)
-                last_opt_step = ni
+                # scaler.unscale_(optimizer)
+                # torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+                # scaler.step(optimizer)  # optimizer.step
+                # scaler.update()
+                # optimizer.zero_grad()
+                # if ema:
+                #     ema.update(model)
+                # last_opt_step = ni
             # pbar.set_description()
             mloss = (mloss * i + loss_items) / (i + 1)
             mem = f'{torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0:.3g}G'
@@ -206,13 +206,7 @@ def train(hyp, opt, device):
         scheduler.step()
         ema.update_attr(model,include=['yaml', 'nc', 'hyp', 'names', 'stride', 'class_weights'])
         
-        if epoch == 30:
-            pass
-        if epoch == 50:
-            pass
-        if epoch == 80:
-            pass
-
+   
 
         final_epoch = (epoch+1 ==epochs) or stopper.possible_stop
         with torch.inference_mode():
@@ -350,7 +344,10 @@ hyp = {
     'perspective':0.0,
     'anchors':[[10,13,16,30,33,23],[30,61,62,45,59,119],[116,90,156,198,373,326]],
     'warmup_epochs':3,
-    'label_smoothing':0
+    'label_smoothing':0,
+    'cls_pw':1.0,
+    'obj_pw':1.0,
+    'anchor_t':4.0
 
 
     }
