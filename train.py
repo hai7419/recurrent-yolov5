@@ -170,9 +170,11 @@ def train(hyp, opt, device):
                 # for j,x in enumerate(optimizer.param_groups):
                 #     pass
 
-            pred = model(imgs)
+
             if epoch < 3:
                 print(pred[0])
+            pred = model(imgs)
+            
 
             loss, loss_items = computeloss(pred,targets.to(device))
             loss.backward()
