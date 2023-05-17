@@ -95,7 +95,7 @@ def train(hyp, opt, device):
         stride=32,
         hyp=hyp,
         augment=True,
-        cache=None if opt.cache == 'val' else opt.cache,
+        # cache=None if opt.cache == 'val' else opt.cache,
         pad=0,
         rect=False,
         workers=1,
