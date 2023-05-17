@@ -779,6 +779,11 @@ class yolodateset(Dataset):
         self.shapes = np.array(shapes)
         self.im_files = list(cache.keys())
 
+        print(f'labels 0 is {self.labels[0]}')
+        print(f'labels 1 is {self.labels[1]}')
+        print(f'labels 2 is {self.labels[2]}')
+        print(f'labels 3 is {self.labels[3]}')
+
         n = len(self.shapes)  # number of images
         bi = np.floor(np.arange(n) / batch_size).astype(int)  # batch index
         nb = bi[-1] + 1  # number of batches
