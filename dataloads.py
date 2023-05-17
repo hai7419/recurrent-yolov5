@@ -684,34 +684,34 @@ def create_dataloader(path,
                       prefix='',
                       shuffle=False,
                       seed=0):
-    if rect and shuffle:
-        LOGGER.warning('WARNING ⚠️ --rect is incompatible with DataLoader shuffle, setting shuffle=False')
-        shuffle = False
-    with torch_distributed_zero_first(rank):  # init dataset *.cache only once if DDP
-        dataset = LoadImagesAndLabels(
-            path,
-            imgsz,
-            batch_size,
-            augment=augment,  # augmentation
-            hyp=hyp,  # hyperparameters
-            rect=rect,  # rectangular batches
-            # cache_images=cache,
-            single_cls=single_cls,
-            stride=int(stride),
-            pad=pad,
-            image_weights=image_weights,
-            prefix=prefix)
+    # if rect and shuffle:
+    #     LOGGER.warning('WARNING ⚠️ --rect is incompatible with DataLoader shuffle, setting shuffle=False')
+    #     shuffle = False
+    # with torch_distributed_zero_first(rank):  # init dataset *.cache only once if DDP
+    dataset = LoadImagesAndLabels(
+        path,
+        imgsz,
+        batch_size,
+        augment=augment,  # augmentation
+        hyp=hyp,  # hyperparameters
+        rect=rect,  # rectangular batches
+        # cache_images=cache,
+        single_cls=single_cls,
+        stride=int(stride),
+        pad=pad,
+        image_weights=image_weights,
+        prefix=prefix)
 
     batch_size = min(batch_size, len(dataset))
     nd = torch.cuda.device_count()  # number of CUDA devices
-    nw = min([os.cpu_count() // max(nd, 1), batch_size if batch_size > 1 else 0, workers])  # number of workers
-    sampler = None if rank == -1 else distributed.DistributedSampler(dataset, shuffle=shuffle)
+    # nw = min([os.cpu_count() // max(nd, 1), batch_size if batch_size > 1 else 0, workers])  # number of workers
+    sampler = None #if rank == -1 else distributed.DistributedSampler(dataset, shuffle=shuffle)
     loader = DataLoader #if image_weights else InfiniteDataLoader  # only DataLoader allows for attribute updates
     generator = torch.Generator()
-    generator.manual_seed(6148914691236517205 + seed + RANK)
+    generator.manual_seed(6148914691236517205 + seed -1)
     return loader(dataset,
                   batch_size=batch_size,
-                  shuffle=shuffle and sampler is None,
+                  shuffle=shuffle,   # and sampler is None,
                   num_workers=1,
                   sampler=sampler,
                   pin_memory=PIN_MEMORY,
