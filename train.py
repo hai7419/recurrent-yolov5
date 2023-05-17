@@ -99,7 +99,7 @@ def train(hyp, opt, device):
         pad=0,
         rect=False,
         workers=1,
-        image_weights = opt.image_weights,
+        # image_weights = opt.image_weights,
         shuffle=True,
         seed=0
     )
@@ -175,7 +175,7 @@ def train(hyp, opt, device):
 
         pbar = tqdm(pbar,total=nb,bar_format=TQDM_BAR_FORMAT)
         optimizer.zero_grad()
-        for i,(imgs,targets,_,_) in pbar:
+        for i,(imgs,targets,_) in pbar:
             
             # if epoch<3:
             #     draw_targets(imgs,targets)
