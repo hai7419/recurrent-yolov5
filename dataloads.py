@@ -986,7 +986,7 @@ class yolodateset(Dataset):
         img4, labels4 = randon_perspective(img4,
                                            labels4,
                                            segments4,
-                                           degrees=self.hyp['degrees'],
+                                           degrees=self.hyp['degrees'],# degrees=self.hyp['degrees'],
                                            translate=self.hyp['translate'],
                                            scale=self.hyp['scale'],
                                            shear=self.hyp['shear'],
