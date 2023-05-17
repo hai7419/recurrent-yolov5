@@ -946,7 +946,7 @@ class yolodateset(Dataset):
         random.shuffle(indices)
         for i, index in enumerate(indices):
             # Load image
-            img, _, (h, w) = self.load_image(index)
+            img, _, (h, w) = self.load_img(index=index) 
 
             # place img in img4
             if i == 0:  # top left
