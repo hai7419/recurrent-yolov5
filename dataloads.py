@@ -1054,6 +1054,7 @@ class yolodateset(Dataset):
                         (h0,w0)   image original h  w    
                         im.shape[:2]  image resize h w
         """
+        print(f'im file index is{index}')
         im = cv2.imread(self.im_files[index])
         h0,w0 = im.shape[:2]  #[h,w,c]
         r = self.im_size / max(h0,w0)
