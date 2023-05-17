@@ -836,7 +836,7 @@ class yolodateset(Dataset):
         mosaic = self.mosaic #and random.random() < hyp['mosaic']
         shapes = None
         if mosaic:
-            img, labels = self.laod_mosaic(index)
+            img, labels = self.load_mosaic(index)
             shapes = None
 
         else:
@@ -995,7 +995,7 @@ class yolodateset(Dataset):
 
         return img4, labels4
     
-    # def laod_mosaic(self,index):
+    # def load_mosaic(self,index):
     #     """
     #         output  img [hwc]   type:numpy
     #                 lables [class xyxy]  pixels
