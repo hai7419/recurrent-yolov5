@@ -745,7 +745,7 @@ class yolodateset(Dataset):
         self.im_files = sorted(glob.glob(os.path.join(self.path,'images/*')))
         self.im_labs =  sorted(glob.glob(os.path.join(self.path,'labs/*')))
         self.lab_files = []
-        self.im = []
+        self.img = []
         self.hyp = hyp
         self.rect = rect
         self.augment = augment
