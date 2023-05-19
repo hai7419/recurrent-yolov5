@@ -343,13 +343,14 @@ def uploadiamge(img,labs):
         # lb = torch.ones(labs.shape)
         j = labs[:,0]==i
         lb = labs[j]
-        
-        im = Image.fromarray(uploadimgs[i].numpy().transpose(1,2,0))
+        im = uploadimgs[i].numpy().transpose(1,2,0)*255
+        im = im.astype(np.uint8)
+        im = Image.fromarray(im)
         draw = ImageDraw.Draw(im)
         for k in range(lb.shape[0]):
 
             draw.rectangle(lb[k,2:].numpy(),outline='red')
-            # draw.text(lb[k,2:4].numpy().astype(np.uint)+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
+            draw.text(lb[k,2:4].numpy().astype(np.uint)+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
         del draw
         # im.show()
         #print(im.mode)
