@@ -12,7 +12,7 @@ import random
 import psutil
 from tqdm import tqdm
 import contextlib
-from multiprocessing.pool import Pool
+from multiprocessing.pool import Pool,ThreadPool
 import torch.distributed as dist
 from general import LOGGER
 from contextlib import contextmanager
@@ -816,25 +816,23 @@ class yolodateset(Dataset):
                     shapes[i] = [1, 1 / mini]
 
             self.batch_shapes = np.ceil(np.array(shapes) * img_size / stride + pad).astype(int) * stride
-        
-        # if cache_images == 'ram' and not self.check_cache_ram():
-        #     cache_images = False
-        # self.ims = [None] * n
-        # self.npy_files = [Path(f).with_suffix('.npy') for f in self.im_files]
-        # if cache_images:
-        #     b, gb = 0, 1 << 30  # bytes of cached images, bytes per gigabytes
-        #     self.im_hw0, self.im_hw = [None] * n, [None] * n
-        #     fcn = self.cache_images_to_disk if cache_images == 'disk' else self.load_image
-        #     results = ThreadPool(NUM_THREADS).imap(fcn, range(n))
-        #     pbar = tqdm(enumerate(results), total=n, bar_format=TQDM_BAR_FORMAT)
-        #     for i, x in pbar:
-        #         if cache_images == 'disk':
-        #             b += self.npy_files[i].stat().st_size
-        #         else:  # 'ram'
-        #             self.ims[i], self.im_hw0[i], self.im_hw[i] = x  # im, hw_orig, hw_resized = load_image(self, i)
-        #             b += self.ims[i].nbytes
-        #         pbar.desc = f'Caching images ({b / gb:.1f}GB {cache_images})'
-        #     pbar.close()
+        cache_images = True
+        if not self.check_cache_ram():
+            cache_images = False
+        self.ims = [None] * n
+        self.npy_files = [Path(f).with_suffix('.npy') for f in self.im_files]
+        if cache_images:
+            b, gb = 0, 1 << 30  # bytes of cached images, bytes per gigabytes
+            self.im_hw0, self.im_hw = [None] * n, [None] * n
+            fcn = self.load_img
+            results = ThreadPool(NUM_THREADS).imap(fcn, range(n))
+            pbar = tqdm(enumerate(results), total=n, bar_format=TQDM_BAR_FORMAT)
+            for i, x in pbar:
+               
+                self.ims[i], self.im_hw0[i], self.im_hw[i] = x  # im, hw_orig, hw_resized = load_image(self, i)
+                b += self.ims[i].nbytes
+                pbar.desc = f'Caching images ({b / gb:.1f}GB {cache_images})'
+            pbar.close()
 
 
     def __len__(self):
@@ -894,7 +892,8 @@ class yolodateset(Dataset):
         mem = psutil.virtual_memory() #  total, available, percent, used  
         cache = mem_required*(1+safety_margin)<mem.available
         if not cache:
-            pass
+            LOGGER.info(f"{'caching images ' if cache else 'not caching images '}")
+
         return cache
     def cache_labels(self,path=Path('./labels.cache')):
         """
@@ -1058,7 +1057,7 @@ class yolodateset(Dataset):
     #         border=self.mosaic_border
     #     )
     #     return img4,labels4
-    def load_img(self,index):
+    def load_img(self,i):
         """
                 no pad
                 input   index 
@@ -1067,13 +1066,32 @@ class yolodateset(Dataset):
                         im.shape[:2]  image resize h w
         """
         
-        im = cv2.imread(self.im_files[index])  
-        h0,w0 = im.shape[:2]  #[h,w,c]
-        r = self.im_size / max(h0,w0)
-        if r != 1:
-            im = cv2.resize(im,(math.ceil(w0 * r), math.ceil(h0 * r)),interpolation=cv2.INTER_AREA)
+        im, f, fn = self.ims[i], self.im_files[i], self.npy_files[i],
+        if im is None:  # not cached in RAM
+            if fn.exists():  # load npy
+                im = np.load(fn)
+            else:  # read image
+                im = cv2.imread(f)  # BGR
+                assert im is not None, f'Image Not Found {f}'
+            h0, w0 = im.shape[:2]  # orig hw
+            r = self.img_size / max(h0, w0)  # ratio
+            if r != 1:  # if sizes are not equal
+                interp = cv2.INTER_LINEAR if (self.augment or r > 1) else cv2.INTER_AREA
+                im = cv2.resize(im, (math.ceil(w0 * r), math.ceil(h0 * r)), interpolation=interp)
+            return im, (h0, w0), im.shape[:2]  # im, hw_original, hw_resized
+        return self.ims[i], self.im_hw0[i], self.im_hw[i]  # im, hw_original, hw_resized
 
-        return im,(h0,w0),im.shape[:2]
+
+
+
+
+        # im = cv2.imread(self.im_files[index])  
+        # h0,w0 = im.shape[:2]  #[h,w,c]
+        # r = self.im_size / max(h0,w0)
+        # if r != 1:
+        #     im = cv2.resize(im,(math.ceil(w0 * r), math.ceil(h0 * r)),interpolation=cv2.INTER_AREA)
+
+        # return im,(h0,w0),im.shape[:2]
     def xywhn2xyxy(self,x,w=640,h=640,dw=0,dh=0):
         y = x.clone() if isinstance(x, torch.Tensor) else np.copy(x)
         y[..., 0] = w * (x[..., 0] - x[..., 2] / 2) + dw  # top left x
