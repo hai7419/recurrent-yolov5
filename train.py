@@ -333,14 +333,18 @@ def uploadiamge(img,labs):
     output  draw image and target
     
     """    
-    shape = img.shape
-    labs = xywh2xyxy(labs,shape[2],shape[3])
+    uploadimgs=deepcopy(img).to('cpu')
+    uploadlabs=deepcopy(labs).to('cpu')
+    
+    shape = uploadimgs.shape
+    labs = xywh2xyxy(uploadlabs,shape[2],shape[3])
 
-    for i in range(img.shape[0]):
+    for i in range(uploadimgs.shape[0]):
         # lb = torch.ones(labs.shape)
         j = labs[:,0]==i
         lb = labs[j]
-        im = Image.fromarray(img[i].numpy().transpose(1,2,0))
+        
+        im = Image.fromarray(uploadimgs[i].numpy().transpose(1,2,0))
         draw = ImageDraw.Draw(im)
         for k in range(lb.shape[0]):
 
