@@ -824,18 +824,18 @@ class yolodateset(Dataset):
 
 
 
-        # if cache_images:
-        #     b, gb = 0, 1 << 30  # bytes of cached images, bytes per gigabytes
-        #     self.im_hw0, self.im_hw = [None] * n, [None] * n
-        #     fcn = self.load_img
-        #     results = ThreadPool(NUM_THREADS).imap(fcn, range(n))
-        #     pbar = tqdm(enumerate(results), total=n, bar_format=TQDM_BAR_FORMAT)
-        #     for i, x in pbar:
+        if cache_images:
+            b, gb = 0, 1 << 30  # bytes of cached images, bytes per gigabytes
+            self.im_hw0, self.im_hw = [None] * n, [None] * n
+            fcn = self.load_img
+            results = ThreadPool(NUM_THREADS).imap(fcn, range(n))
+            pbar = tqdm(enumerate(results), total=n, bar_format=TQDM_BAR_FORMAT)
+            for i, x in pbar:
                
-        #         self.ims[i], self.im_hw0[i], self.im_hw[i] = x  # im, hw_orig, hw_resized = load_image(self, i)
-        #         b += self.ims[i].nbytes
-        #         pbar.desc = f'Caching images ({b / gb:.1f}GB {cache_images})'
-        #     pbar.close()
+                self.ims[i], self.im_hw0[i], self.im_hw[i] = x  # im, hw_orig, hw_resized = load_image(self, i)
+                b += self.ims[i].nbytes
+                pbar.desc = f'Caching images ({b / gb:.1f}GB {cache_images})'
+            pbar.close()
 
 
     def __len__(self):
@@ -882,6 +882,8 @@ class yolodateset(Dataset):
         img = img.transpose((2,0,1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
         return torch.from_numpy(img),labels_out,shapes
+    
+    
     def check_cache_ram(self,safety_margin=0.1):
         #check image cacheing requirements available memory
         b = 0

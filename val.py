@@ -5,6 +5,8 @@ import time
 from tqdm import tqdm
 import torchvision
 from general import LOGGER
+from copy import deepcopy
+from PIL import Image,ImageDraw
 
 TQDM_BAR_FORMAT = '{l_bar}{bar:10}{r_bar}'  # tqdm bar format
 def validate(
@@ -14,6 +16,7 @@ def validate(
       dataloader = None,
       compute_loss = None,
       augment = False,
+      epoch = 0,
       half = False,
       max_det = 300,
       iou_thres = 0.6,
@@ -46,6 +49,10 @@ def validate(
     pbar = tqdm(dataloader, desc=s, bar_format=TQDM_BAR_FORMAT)
 
     for batch_i,(im,targets,shapes) in enumerate(pbar):
+        if epoch<1 and batch_i<2:
+            uploadiamge(im,targets)
+        
+        
         if cuda:
             im = im.to(device,non_blocking=True)
             targets = targets.to(device)
@@ -103,8 +110,36 @@ def validate(
     return (mp,mr,map50,map,*(loss.cpu() / len(dataloader))),maps
 
 
+import wandb
+class_name = ['missing_hole','mouse_bite','open_circuit','short','spur','spurious_copper']
+def uploadiamge(img,labs):
+    """
+    input   img [batch channel h w ] type:tensor
+            labs [class,xywh]  type:tensor
+    output  draw image and target
+    
+    """    
+    uploadimgs=deepcopy(img).to('cpu')
+    uploadlabs=deepcopy(labs).to('cpu')
+    
+    shape = uploadimgs.shape
+    labs = xywh2xyxy(uploadlabs,shape[2],shape[3])
 
+    for i in range(uploadimgs.shape[0]):
+        # lb = torch.ones(labs.shape)
+        j = labs[:,0]==i
+        lb = labs[j]
+        im = Image.fromarray(uploadimgs[i].numpy().transpose(1,2,0))
+        draw = ImageDraw.Draw(im)
+        for k in range(lb.shape[0]):
 
+            draw.rectangle(lb[k,2:].numpy(),outline='red')
+            draw.text(lb[k,2:4].numpy().astype(np.uint)+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
+        del draw
+        # im.show()
+        #print(im.mode)
+        # im.save('D:\python\yolov5-mysely\ccc.jpg',format='png')
+        wandb.log({"val images": wandb.Image(im)})
 
 
 
