@@ -760,15 +760,7 @@ class yolodateset(Dataset):
         LOGGER.info(f'im_labs len is {len(self.im_labs)}')
         
 
-        print(f'lab file is {self.im_labs[0]}')
-        print(f'lab file is {self.im_labs[1]}')
-        print(f'lab file is {self.im_labs[2]}')
-        print(f'lab file is {self.im_labs[3]}')
-
-        print(f'im file is {self.im_files[0]}')
-        print(f'im file is {self.im_files[1]}')
-        print(f'im file is {self.im_files[2]}')
-        print(f'im file is {self.im_files[3]}')
+        
 
 
         cache_path = Path(self.im_labs[0]).parent.with_suffix('.cache')
@@ -791,10 +783,7 @@ class yolodateset(Dataset):
         self.shapes = np.array(shapes)
         self.im_files = list(cache.keys())
 
-        print(f'labels 0 is {self.labels[0]}')
-        print(f'labels 1 is {self.labels[1]}')
-        print(f'labels 2 is {self.labels[2]}')
-        print(f'labels 3 is {self.labels[3]}')
+       
 
         n = len(self.shapes)  # number of images
         bi = np.floor(np.arange(n) / batch_size).astype(int)  # batch index

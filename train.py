@@ -177,12 +177,14 @@ def train(hyp, opt, device):
         optimizer.zero_grad()
         for i,(imgs,targets,_) in pbar:
             
-            # if epoch<3:
-            #     draw_targets(imgs,targets)
+            
 
             ni = i+nb*epoch
             imgs = imgs.to(device,non_blocking=True).float()/255
 
+            if ni<2:
+                uploadiamge(imgs,targets)
+            
             if ni <= nw:
                 xi = [0, nw]
                 accumulate = max(1,np.interp(ni,xi,[1,nbs/batch_size]).round())
@@ -190,10 +192,10 @@ def train(hyp, opt, device):
                 #     pass
 
 
-            if epoch < 3:
-                print(targets[0])
-                print(targets[1])
-                print(imgs[0,0,0])
+            # if epoch < 3:
+            #     print(targets[0])
+            #     print(targets[1])
+            #     print(imgs[0,0,0])
             
             pred = model(imgs)
             
@@ -267,7 +269,7 @@ def train(hyp, opt, device):
         ckpt = {
             'epoch':epoch,
             'best_finess':best_fitness,
-            'model':deepcopy(model).half(),
+            'model':deepcopy(model).float(),
             'optimizer':optimizer.state_dict,
             'opt':vars(opt),
             'date':datetime.now().isoformat()
@@ -346,8 +348,9 @@ def draw_targets(img,labs):
             # draw.text(lb[k,2:4].numpy().astype(np.uint)+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
         del draw
         # im.show()
-        print(im.mode)
+        #print(im.mode)
         # im.save('D:\python\yolov5-mysely\ccc.jpg',format='png')
+        wandb.log({"images": wandb.Image(im)})
 
     
 
@@ -359,7 +362,8 @@ def main(opt):
         pass
     else:
         
-        opt.save_dir = str(increment_path(Path(opt.project)/'exp',exist_ok=False,mkdir=True))
+        #opt.save_dir = str(increment_path(Path(opt.project)/'exp',exist_ok=False,mkdir=True))
+        opt.save_dir = str(increment_path(Path('/content/drive/MyDrive/trian/exp'),exist_ok=False,mkdir=True))
 
     train(hyp, opt, device)
     
