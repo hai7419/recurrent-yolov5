@@ -745,6 +745,7 @@ class yolodateset(Dataset):
         self.im_files = sorted(glob.glob(os.path.join(self.path,'images/*')))
         self.im_labs =  sorted(glob.glob(os.path.join(self.path,'labs/*')))
         self.lab_files = []
+        self.im = []
         self.hyp = hyp
         self.rect = rect
         self.augment = augment
@@ -756,8 +757,10 @@ class yolodateset(Dataset):
                 lb = [x.split() for x in f.read().strip().splitlines() if len(x)]
                 lb = np.array(lb, dtype=np.float32)
             self.lab_files.append(lb)
-
-        LOGGER.info(f'im_labs len is {len(self.im_labs)}')
+        
+        for im_files in self.im_files:
+                self.img.append(cv2.imread(im_files))
+         
         
 
         
@@ -948,7 +951,7 @@ class yolodateset(Dataset):
     
     def load_mosaic(self, index):
         # YOLOv5 4-mosaic loader. Loads 1 image + 3 random images into a 4-image mosaic
-        labels4, segments4 = [], []
+        labels4 = []
         s = self.im_size
         yc, xc = (int(random.uniform(-x, 2 * s + x)) for x in self.mosaic_border)  # mosaic center x, y
         indices = [index] + random.choices(self.indices, k=3)  # 3 additional image indices
@@ -1063,8 +1066,8 @@ class yolodateset(Dataset):
                         (h0,w0)   image original h  w    
                         im.shape[:2]  image resize h w
         """
-        print(f'im file index is{index}')
-        im = cv2.imread(self.im_files[index])
+        
+        im = self.img[index]  
         h0,w0 = im.shape[:2]  #[h,w,c]
         r = self.im_size / max(h0,w0)
         if r != 1:
