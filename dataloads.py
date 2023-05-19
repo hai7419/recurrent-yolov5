@@ -758,8 +758,8 @@ class yolodateset(Dataset):
                 lb = np.array(lb, dtype=np.float32)
             self.lab_files.append(lb)
         
-        for im_files in self.im_files:
-                self.img.append(cv2.imread(im_files))
+        # for im_files in self.im_files:
+        #         self.img.append(cv2.imread(im_files))
          
         
 
@@ -1067,7 +1067,7 @@ class yolodateset(Dataset):
                         im.shape[:2]  image resize h w
         """
         
-        im = self.img[index]  
+        im = cv2.imread(self.im_files[index])  
         h0,w0 = im.shape[:2]  #[h,w,c]
         r = self.im_size / max(h0,w0)
         if r != 1:
