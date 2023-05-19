@@ -821,18 +821,21 @@ class yolodateset(Dataset):
             cache_images = False
         self.ims = [None] * n
         self.npy_files = [Path(f).with_suffix('.npy') for f in self.im_files]
-        if cache_images:
-            b, gb = 0, 1 << 30  # bytes of cached images, bytes per gigabytes
-            self.im_hw0, self.im_hw = [None] * n, [None] * n
-            fcn = self.load_img
-            results = ThreadPool(NUM_THREADS).imap(fcn, range(n))
-            pbar = tqdm(enumerate(results), total=n, bar_format=TQDM_BAR_FORMAT)
-            for i, x in pbar:
+
+
+
+        # if cache_images:
+        #     b, gb = 0, 1 << 30  # bytes of cached images, bytes per gigabytes
+        #     self.im_hw0, self.im_hw = [None] * n, [None] * n
+        #     fcn = self.load_img
+        #     results = ThreadPool(NUM_THREADS).imap(fcn, range(n))
+        #     pbar = tqdm(enumerate(results), total=n, bar_format=TQDM_BAR_FORMAT)
+        #     for i, x in pbar:
                
-                self.ims[i], self.im_hw0[i], self.im_hw[i] = x  # im, hw_orig, hw_resized = load_image(self, i)
-                b += self.ims[i].nbytes
-                pbar.desc = f'Caching images ({b / gb:.1f}GB {cache_images})'
-            pbar.close()
+        #         self.ims[i], self.im_hw0[i], self.im_hw[i] = x  # im, hw_orig, hw_resized = load_image(self, i)
+        #         b += self.ims[i].nbytes
+        #         pbar.desc = f'Caching images ({b / gb:.1f}GB {cache_images})'
+        #     pbar.close()
 
 
     def __len__(self):
@@ -891,8 +894,8 @@ class yolodateset(Dataset):
         mem_required = b*self.n/n
         mem = psutil.virtual_memory() #  total, available, percent, used  
         cache = mem_required*(1+safety_margin)<mem.available
-        if not cache:
-            LOGGER.info(f"{'caching images ' if cache else 'not caching images '}")
+        
+        LOGGER.info(f"{'caching images ' if cache else 'not caching images '}")
 
         return cache
     def cache_labels(self,path=Path('./labels.cache')):
