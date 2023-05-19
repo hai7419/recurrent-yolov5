@@ -326,7 +326,7 @@ def xywh2xyxy(x,w=640,h=640):
     y[..., 5] = h * (x[..., 3] + x[..., 5] / 2)   # bottom right
     return y
 
-def draw_targets(img,labs):
+def uploadiamge(img,labs):
     """
     input   img [batch channel h w ] type:tensor
             labs [class,xywh]  type:tensor
