@@ -162,7 +162,7 @@ def train(hyp, opt, device):
     last_opt_step = -1
     
     
-    wandb.init(project = "yolov5")
+    wandb.init(project = "yolov5-augment")
     
     for epoch in range(start_epoch,epochs):
         model.train()
