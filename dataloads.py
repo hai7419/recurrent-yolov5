@@ -742,7 +742,7 @@ class yolodateset(Dataset):
         super().__init__()
         self.path = path
         self.im_size = img_size
-        self.im_files = sorted(glob.glob(os.path.join(self.path,'images/*')))
+        self.im_files = sorted(glob.glob(os.path.join(self.path,'images/*.jpg')))
         self.im_labs =  sorted(glob.glob(os.path.join(self.path,'labs/*')))
         self.lab_files = []
         self.img = []
