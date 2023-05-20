@@ -726,6 +726,11 @@ NUM_THREADS = min(4, max(1, os.cpu_count() - 1))  # number of YOLOv5 multiproces
 TQDM_BAR_FORMAT = '{l_bar}{bar:10}{r_bar}'  # tqdm bar format
 PIN_MEMORY = str(os.getenv('PIN_MEMORY', True)).lower() == 'true'
 
+
+def img2label_paths(img_paths):
+    # Define label paths as a function of image paths
+    sa, sb = f'{os.sep}images{os.sep}', f'{os.sep}labels{os.sep}'  # /images/, /labels/ substrings
+    return [sb.join(x.rsplit(sa, 1)).rsplit('.', 1)[0] + '.txt' for x in img_paths]
 class yolodateset(Dataset):
     def __init__(
             self,
@@ -742,8 +747,8 @@ class yolodateset(Dataset):
         super().__init__()
         self.path = path
         self.im_size = img_size
-        self.im_files = sorted(glob.glob(os.path.join(self.path,'images/*.jpg')))
-        self.im_labs =  sorted(glob.glob(os.path.join(self.path,'labs/*')))
+        self.im_files = sorted(glob.glob(os.path.join(self.path,'*.jpg')))
+        self.im_labs =  img2label_paths(self.im_files)
         self.lab_files = []
         self.img = []
         self.hyp = hyp
@@ -828,14 +833,13 @@ class yolodateset(Dataset):
             b, gb = 0, 1 << 30  # bytes of cached images, bytes per gigabytes
             self.im_hw0, self.im_hw = [None] * n, [None] * n
             fcn = self.load_img
-            results = ThreadPool(NUM_THREADS).imap(fcn, range(n))
-            pbar = tqdm(enumerate(results), total=n, bar_format=TQDM_BAR_FORMAT)
-            for i, x in pbar:
+            # results = ThreadPool(NUM_THREADS).imap(fcn, range(n))
+            # pbar = tqdm(enumerate(results), total=n, bar_format=TQDM_BAR_FORMAT)
+            for i in range(n):
                
-                self.ims[i], self.im_hw0[i], self.im_hw[i] = x  # im, hw_orig, hw_resized = load_image(self, i)
-                b += self.ims[i].nbytes
-                pbar.desc = f'Caching images ({b / gb:.1f}GB {cache_images})'
-            pbar.close()
+                self.ims[i], self.im_hw0[i], self.im_hw[i] = self.load_img(i)  # im, hw_orig, hw_resized = load_image(self, i)
+                
+                
 
 
     def __len__(self):
@@ -877,7 +881,7 @@ class yolodateset(Dataset):
         num_lab = len(labels)
         labels_out = torch.zeros((num_lab, 6))
         if num_lab:
-            labels[:, 1:] = self.xyxy2xywhn(labels[:, 1:], w=img.shape[1], h=img.shape[0])
+            labels[:, 1:5] = self.xyxy2xywhn(labels[:, 1:5], w=img.shape[1], h=img.shape[0])
             labels_out[:, 1:] = torch.from_numpy(labels)
         img = img.transpose((2,0,1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
@@ -1072,31 +1076,33 @@ class yolodateset(Dataset):
         """
         
         im, f, fn = self.ims[i], self.im_files[i], self.npy_files[i],
-        if im is None:  # not cached in RAM
-            if fn.exists():  # load npy
-                im = np.load(fn)
-            else:  # read image
-                im = cv2.imread(f)  # BGR
-                assert im is not None, f'Image Not Found {f}'
-            h0, w0 = im.shape[:2]  # orig hw
-            r = self.im_size / max(h0, w0)  # ratio
-            if r != 1:  # if sizes are not equal
-                interp = cv2.INTER_LINEAR if (self.augment or r > 1) else cv2.INTER_AREA
-                im = cv2.resize(im, (math.ceil(w0 * r), math.ceil(h0 * r)), interpolation=interp)
-            return im, (h0, w0), im.shape[:2]  # im, hw_original, hw_resized
-        return self.ims[i], self.im_hw0[i], self.im_hw[i]  # im, hw_original, hw_resized
+        # if im is None:  # not cached in RAM
+        #     if fn.exists():  # load npy
+        #         im = np.load(fn)
+        #     else:  # read image
+        #         im = cv2.imread(f)  # BGR
+        #         assert im is not None, f'Image Not Found {f}'
+        #     h0, w0 = im.shape[:2]  # orig hw
+        #     r = self.im_size / max(h0, w0)  # ratio
+        #     if r != 1:  # if sizes are not equal
+        #         interp = cv2.INTER_LINEAR if (self.augment or r > 1) else cv2.INTER_AREA
+        #         im = cv2.resize(im, (math.ceil(w0 * r), math.ceil(h0 * r)), interpolation=interp)
+        #     return im, (h0, w0), im.shape[:2]  # im, hw_original, hw_resized
+        # return self.ims[i], self.im_hw0[i], self.im_hw[i]  # im, hw_original, hw_resized
 
 
 
+        if im is None:
 
+            im = cv2.imread(self.im_files[i])  
+            h0,w0 = im.shape[:2]  #[h,w,c]
+            r = self.im_size / max(h0,w0)
+            if r != 1:
+                im = cv2.resize(im,(math.ceil(w0 * r), math.ceil(h0 * r)),interpolation=cv2.INTER_AREA)
 
-        # im = cv2.imread(self.im_files[index])  
-        # h0,w0 = im.shape[:2]  #[h,w,c]
-        # r = self.im_size / max(h0,w0)
-        # if r != 1:
-        #     im = cv2.resize(im,(math.ceil(w0 * r), math.ceil(h0 * r)),interpolation=cv2.INTER_AREA)
-
-        # return im,(h0,w0),im.shape[:2]
+            return im,(h0,w0),im.shape[:2]
+        return self.ims[i], self.im_hw0[i], self.im_hw[i]
+        
     def xywhn2xyxy(self,x,w=640,h=640,dw=0,dh=0):
         y = x.clone() if isinstance(x, torch.Tensor) else np.copy(x)
         y[..., 0] = w * (x[..., 0] - x[..., 2] / 2) + dw  # top left x
@@ -1301,20 +1307,21 @@ def create_dataloader(
     if rect and shuffle:
         LOGGER.warning('WARNING  --rect is incompatible with DataLoader shuffle, setting shuffle=False')
         shuffle = False
-    dataset = yolodateset(
-        path = path,
-        img_size = imgsz,
-        batch_size = batch_size,
-        hyp=hyp,  # hyperparameters
-        augment=augment,  # augmentation
-        rect=rect,  # rectangular batches
-        stride=stride,
-        pad=pad
-        )
+    with torch_distributed_zero_first(-1):
+        dataset = yolodateset(
+            path = path,
+            img_size = imgsz,
+            batch_size = batch_size,
+            hyp=hyp,  # hyperparameters
+            augment=augment,  # augmentation
+            rect=rect,  # rectangular batches
+            stride=stride,
+            pad=pad
+            )
 
     batch_size = min(batch_size, len(dataset))
-    nd = torch.cuda.device_count()  # number of CUDA devices
-    nw = min([os.cpu_count() // max(nd, 1), batch_size if batch_size > 1 else 0, workers])  # number of workers
+    # nd = torch.cuda.device_count()  # number of CUDA devices
+    # nw = min([os.cpu_count() // max(nd, 1), batch_size if batch_size > 1 else 0, workers])  # number of workers
      
     generator = torch.Generator()
     generator.manual_seed(6148914691236517205 + seed -1)
@@ -1330,9 +1337,14 @@ def create_dataloader(
 
 
 
-
-
-
+@contextmanager
+def torch_distributed_zero_first(local_rank: int):
+    # Decorator to make all processes in distributed training wait for each local_master to do something
+    if local_rank not in [-1, 0]:
+        dist.barrier(device_ids=[local_rank])
+    yield
+    if local_rank == 0:
+        dist.barrier(device_ids=[0])
 
 if __name__ == "__main__":
     

@@ -51,6 +51,7 @@ def validate(
     for batch_i,(im,targets,shapes) in enumerate(pbar):
         if epoch<1 and batch_i<2:
             uploadiamge(im,targets)
+            
         
         
         if cuda:
@@ -109,7 +110,13 @@ def validate(
         maps[c]=ap[i]
     return (mp,mr,map50,map,*(loss.cpu() / len(dataloader))),maps
 
-
+def xywhn2xyxy(x,w=640,h=640):
+    y = x.clone() if isinstance(x, torch.Tensor) else np.copy(x)
+    y[..., 2] = w * (x[..., 2] - x[..., 4] / 2)   # top left x
+    y[..., 3] = h * (x[..., 3] - x[..., 5] / 2)   # top left y
+    y[..., 4] = w * (x[..., 2] + x[..., 4] / 2)   # bottom right x
+    y[..., 5] = h * (x[..., 3] + x[..., 5] / 2)   # bottom right
+    return y
 import wandb
 class_name = ['missing_hole','mouse_bite','open_circuit','short','spur','spurious_copper']
 def uploadiamge(img,labs):
@@ -123,7 +130,7 @@ def uploadiamge(img,labs):
     uploadlabs=deepcopy(labs).to('cpu')
     
     shape = uploadimgs.shape
-    labs = xywh2xyxy(uploadlabs,shape[2],shape[3])
+    labs = xywhn2xyxy(uploadlabs,shape[3],shape[2])
 
     for i in range(uploadimgs.shape[0]):
         # lb = torch.ones(labs.shape)

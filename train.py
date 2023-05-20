@@ -322,7 +322,7 @@ def train(hyp, opt, device):
 
 class_name = ['missing_hole','mouse_bite','open_circuit','short','spur','spurious_copper']
 
-def xywh2xyxy(x,w=640,h=640):
+def xywhn2xyxy(x,w=640,h=640):
     y = x.clone() if isinstance(x, torch.Tensor) else np.copy(x)
     y[..., 2] = w * (x[..., 2] - x[..., 4] / 2)   # top left x
     y[..., 3] = h * (x[..., 3] - x[..., 5] / 2)   # top left y
@@ -341,7 +341,7 @@ def uploadiamge(img,labs):
     uploadlabs=deepcopy(labs).to('cpu')
     
     shape = uploadimgs.shape
-    labs = xywh2xyxy(uploadlabs,shape[2],shape[3])
+    labs = xywhn2xyxy(uploadlabs,shape[3],shape[2])
 
     for i in range(uploadimgs.shape[0]):
         # lb = torch.ones(labs.shape)
@@ -352,7 +352,7 @@ def uploadiamge(img,labs):
         for k in range(lb.shape[0]):
 
             draw.rectangle(lb[k,2:].numpy(),outline='red')
-            draw.text(lb[k,2:4].numpy().astype(np.uint)+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
+            draw.text(lb[k,2:4].numpy().astype(np.uint),str(lb[k,1].numpy().astype(np.uint)),fill='red')
         del draw
         # im.show()
         #print(im.mode)
