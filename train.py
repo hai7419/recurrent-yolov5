@@ -353,6 +353,7 @@ def uploadiamge(img,labs):
 
             draw.rectangle(lb[k,2:].numpy(),outline='red')
             draw.text(lb[k,2:4].numpy().astype(np.uint),str(lb[k,1].numpy().astype(np.uint)),fill='red')
+            print(f'text lab is {lb[k,2:4].numpy().astype(np.uint)}')
         del draw
         # im.show()
         #print(im.mode)
