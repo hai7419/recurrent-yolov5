@@ -352,8 +352,8 @@ def uploadiamge(img,labs):
         for k in range(lb.shape[0]):
 
             draw.rectangle(lb[k,2:].numpy(),outline='red')
-            print(f'text lab is {lb[k,2:4].numpy().astype(np.uint)}')
-            draw.text(lb[k,2:4].numpy().astype(np.uint),str(lb[k,1].numpy().astype(np.uint)),fill='red')
+            print(f'text lab is {tuple(lb[k,2:4].numpy().astype(np.uint))}')
+            draw.text(tuple(lb[k,2:4].numpy().astype(np.uint)),str(lb[k,1].numpy().astype(np.uint)),fill='red')
             
         del draw
         # im.show()
