@@ -117,6 +117,8 @@ def xywhn2xyxy(x,w=640,h=640):
     y[..., 4] = w * (x[..., 2] + x[..., 4] / 2)   # bottom right x
     y[..., 5] = h * (x[..., 3] + x[..., 5] / 2)   # bottom right
     return y
+
+
 import wandb
 class_name = ['missing_hole','mouse_bite','open_circuit','short','spur','spurious_copper']
 def uploadiamge(img,labs):
@@ -141,7 +143,7 @@ def uploadiamge(img,labs):
         for k in range(lb.shape[0]):
 
             draw.rectangle(lb[k,2:].numpy(),outline='red')
-            draw.text(lb[k,2:4].numpy().astype(np.uint)+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
+            draw.text(tuple(lb[k,2:4].numpy().astype(np.uint))+[0,-8],class_name[lb[k,1].numpy().astype(np.uint)],fill='red')
         del draw
         # im.show()
         #print(im.mode)
