@@ -51,15 +51,15 @@ def train(hyp, opt, device):
     save_dir = Path(opt.save_dir)
     epochs = opt.epochs
     batch_size = opt.batch_size
-    resume = opt.resume
-    workers = opt.workers
+    # resume = opt.resume
+    # workers = opt.workers
     
 
     w = save_dir/'weights'
     w.mkdir(parents=True,exist_ok=True)
     last,best = w/'last.pt',w/'best.pt'
     opt.hyp = hyp
-    cuda = device.type != 'cpu'
+    # cuda = device.type != 'cpu'
     init_seeds(0)
 
 
@@ -70,10 +70,10 @@ def train(hyp, opt, device):
     nc = data_dict['nc']
     names = data_dict['names']
 
-    model = Net(ch=3,nc=6,anchors=None).to(device)
+    model = Net(ch=3,nc=6,anchors=hyp['anchors']).to(device)
 
 
-    gs = 32
+    # gs = 32
     imgsz = 640
 
     nbs = 4    #nominal batch size
@@ -98,7 +98,7 @@ def train(hyp, opt, device):
         # cache=None if opt.cache == 'val' else opt.cache,
         pad=0,
         rect=False,
-        workers=1,
+        # workers=1,
         # image_weights = opt.image_weights,
         shuffle=True,
         seed=0
@@ -114,7 +114,6 @@ def train(hyp, opt, device):
         augment=False,
         pad=0.5,
         rect=True,
-        workers=1,
         shuffle=False,
         seed=0
     )[0]
@@ -128,7 +127,6 @@ def train(hyp, opt, device):
         augment=False,
         pad=0.5,
         rect=True,
-        workers=1,
         shuffle=False,
         seed=0
     )[0]
@@ -194,10 +192,10 @@ def train(hyp, opt, device):
                 #     pass
 
 
-            # if epoch < 3:
-            #     print(targets[0])
-            #     print(targets[1])
-            #     print(imgs[0,0,0])
+            if epoch < 3:
+                print(targets[0])
+                print(targets[1])
+                print(imgs[0,0,0])
             
             pred = model(imgs)
             
@@ -352,7 +350,7 @@ def uploadiamge(img,labs):
         for k in range(lb.shape[0]):
 
             draw.rectangle(lb[k,2:].numpy(),outline='red')
-            print(f'text lab is {tuple(lb[k,2:4].numpy().astype(np.uint))}')
+            # print(f'text lab is {tuple(lb[k,2:4].numpy().astype(np.uint))}')
             draw.text(tuple(lb[k,2:4].numpy().astype(np.uint)),str(lb[k,1].numpy().astype(np.uint)),fill='red')
             
         del draw
