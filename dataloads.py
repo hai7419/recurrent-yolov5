@@ -866,6 +866,8 @@ class yolodateset(Dataset):
             if labels.size:
                 labels[:,1:] = self.xywhn2xyxy(labels[:,1:],r*w,r*h,dw,dh)
                 # labels[:,1:] = self.xyxy2xywhn(labels[:,1:],img.shape[1],img.shape[0])
+            if index <4:
+                print(f'index {index} labels is {labels}')
 
             if self.augment:
                 img,labels = randon_perspective(
@@ -885,6 +887,13 @@ class yolodateset(Dataset):
             labels_out[:, 1:] = torch.from_numpy(labels)
         img = img.transpose((2,0,1))[::-1]  # HWC to CHW, BGR to RGB
         img = np.ascontiguousarray(img)
+
+        if index <4:
+                print(f'index {index} labels is {labels}')
+
+        if index <4:
+                print(f'index {index} labels_out is {labels_out}')
+
         return torch.from_numpy(img),labels_out,shapes
     
     

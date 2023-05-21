@@ -49,7 +49,7 @@ def validate(
     pbar = tqdm(dataloader, desc=s, bar_format=TQDM_BAR_FORMAT)
 
     for batch_i,(im,targets,shapes) in enumerate(pbar):
-        if epoch<1 and batch_i<2:
+        if epoch<1 and batch_i<1:
             uploadiamge(im,targets)
             
         
