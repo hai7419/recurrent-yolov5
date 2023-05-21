@@ -70,7 +70,7 @@ def train(hyp, opt, device):
     nc = data_dict['nc']
     names = data_dict['names']
 
-    model = Net(ch=3,nc=6,anchors=hyp['anchors']).to(device)
+    model = Net(ch=3,nc=6,anchors=None).to(device)
 
 
     # gs = 32
@@ -192,16 +192,20 @@ def train(hyp, opt, device):
                 #     pass
 
 
-            # if epoch < 3:
-            #     print(targets[0])
-            #     print(targets[1])
-            #     print(imgs[0,0,0])
+            if epoch < 3:
+                print(targets[0])
+                print(targets[1])
+                print(imgs[0,0,0])
             
             pred = model(imgs)
             
+            if epoch < 3:
+                print(f'pred is{pred[0,1,1,:]}')
 
             loss, loss_items = computeloss(pred,targets.to(device))
             loss.backward()
+            if epoch < 3:
+                print(f'loss is{loss}')
             # with torch.cuda.amp.autocast(False):
             #     pred = model(imgs)
             #     loss, loss_items = computeloss(pred,targets.to(device))
@@ -235,7 +239,12 @@ def train(hyp, opt, device):
         scheduler.step()
         ema.update_attr(model,include=['yaml', 'nc', 'hyp', 'names', 'stride', 'class_weights'])
         
-   
+        if epoch == 10:
+            pass
+        if epoch == 50:
+            pass
+        if epoch == 80:
+            pass
 
         final_epoch = (epoch+1 ==epochs) or stopper.possible_stop
         with torch.inference_mode():
