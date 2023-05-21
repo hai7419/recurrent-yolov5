@@ -200,7 +200,7 @@ def train(hyp, opt, device):
             pred = model(imgs)
             
             if epoch < 3:
-                print(f'pred is{pred[0,1,1,:]}')
+                print(f'pred is{pred[0][0,0,0,5,:]}')
 
             loss, loss_items = computeloss(pred,targets.to(device))
             loss.backward()
