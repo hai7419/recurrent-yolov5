@@ -130,8 +130,8 @@ class yolodateset(Dataset):
         if not self.check_cache_ram():
             cache_images = False
         self.ims = [None] * n
-        self.npy_files = [Path(f).with_suffix('.npy') for f in self.im_files]
-
+        # self.npy_files = [Path(f).with_suffix('.npy') for f in self.im_files]
+        self.npy_files[None] *n
 
 
         if cache_images:
@@ -344,11 +344,11 @@ class yolodateset(Dataset):
         
         im, f, fn = self.ims[i], self.im_files[i], self.npy_files[i],
         if im is None:  # not cached in RAM
-            if fn.exists():  # load npy
-                im = np.load(fn)
-            else:  # read image
-                im = cv2.imread(f)  # BGR
-                assert im is not None, f'Image Not Found {f}'
+            # if fn.exists():  # load npy
+            #     im = np.load(fn)
+            # else:  # read image
+            im = cv2.imread(f)  # BGR
+            assert im is not None, f'Image Not Found {f}'
             h0, w0 = im.shape[:2]  # orig hw
             r = self.im_size / max(h0, w0)  # ratio
             if r != 1:  # if sizes are not equal
