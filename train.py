@@ -173,7 +173,7 @@ def train(hyp, opt, device):
 
         pbar = tqdm(pbar,total=nb,bar_format=TQDM_BAR_FORMAT)
         optimizer.zero_grad()
-        for i,(imgs,targets,_) in pbar:
+        for i,(imgs,targets,_,_) in pbar:
             
             
 
