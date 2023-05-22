@@ -131,7 +131,7 @@ class yolodateset(Dataset):
             cache_images = False
         self.ims = [None] * n
         # self.npy_files = [Path(f).with_suffix('.npy') for f in self.im_files]
-        self.npy_files[None] *n
+        # self.npy_files[None] *n
 
 
         if cache_images:
