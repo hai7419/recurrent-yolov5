@@ -140,10 +140,12 @@ class yolodateset(Dataset):
             # fcn = self.load_img
             # results = ThreadPool(NUM_THREADS).imap(fcn, range(n))
             # pbar = tqdm(enumerate(results), total=n, bar_format=TQDM_BAR_FORMAT)
+            print(f'n is {n}')
             for i in range(n):
                
                 self.ims[i], self.im_hw0[i], self.im_hw[i] = self.load_img(i)  # im, hw_orig, hw_resized = load_image(self, i)
-                
+
+
                 
 
 
@@ -160,6 +162,7 @@ class yolodateset(Dataset):
 
         else:
 
+            print(f'rect index is {index}')
             img, (h0,w0),(h, w) = self.load_img(index)
             shape = self.batch_shapes[self.batch[index]] if self.rect   else (self.im_size,self.im_size)
             img,r,dw,dh = letterBox(im=img,new_shape=shape,auto=False)
