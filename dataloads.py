@@ -342,7 +342,7 @@ class yolodateset(Dataset):
                         im.shape[:2]  image resize h w
         """
         
-        im, f, fn = self.ims[i], self.im_files[i], self.npy_files[i],
+        im, f,  = self.ims[i], self.im_files[i]     #, self.npy_files[i],
         if im is None:  # not cached in RAM
             # if fn.exists():  # load npy
             #     im = np.load(fn)
