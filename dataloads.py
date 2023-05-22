@@ -55,11 +55,7 @@ class yolodateset(Dataset):
         self.mosaic = augment and not rect
         self.mosaic_border = [-img_size // 2, -img_size // 2]
         self.stride = stride
-        for lb_file in self.im_labs:
-            with open(lb_file) as f:
-                lb = [x.split() for x in f.read().strip().splitlines() if len(x)]
-                lb = np.array(lb, dtype=np.float32)
-            self.lab_files.append(lb)
+        
         
         # for im_files in self.im_files:
         #         self.img.append(cv2.imread(im_files))
@@ -126,6 +122,12 @@ class yolodateset(Dataset):
                     shapes[i] = [1, 1 / mini]
 
             self.batch_shapes = np.ceil(np.array(shapes) * img_size / stride + pad).astype(int) * stride
+
+        for lb_file in self.im_labs:
+            with open(lb_file) as f:
+                lb = [x.split() for x in f.read().strip().splitlines() if len(x)]
+                lb = np.array(lb, dtype=np.float32)
+            self.lab_files.append(lb)
         cache_images = True
         if not self.check_cache_ram():
             cache_images = False
