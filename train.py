@@ -192,20 +192,20 @@ def train(hyp, opt, device):
                 #     pass
 
 
-            if epoch < 3:
-                print(targets[0])
-                print(targets[1])
-                print(imgs[0,0,0])
+            # if epoch < 5:
+            #     print(targets[0])
+            #     print(targets[1])
+            #     print(imgs[0,0,0])
             
             pred = model(imgs)
             
-            if epoch < 3:
-                print(f'pred is{pred[0][0,0,0,5,:]}')
+            # if epoch < 5:
+            #     print(f'pred is{pred[0][0,0,0,5,:]}')
 
             loss, loss_items = computeloss(pred,targets.to(device))
             loss.backward()
-            if epoch < 3:
-                print(f'loss is{loss}')
+            # if epoch < 3:
+            #     print(f'loss is{loss}')
             # with torch.cuda.amp.autocast(False):
             #     pred = model(imgs)
             #     loss, loss_items = computeloss(pred,targets.to(device))
