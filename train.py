@@ -41,7 +41,7 @@ def parse_opt():
     parser.add_argument('--rect',action='store_true',help='rectangular training')
     parser.add_argument('--label-smoothing',type=float,default=0.0,help='label smoothing epsilon')
     parser.add_argument('--patience', type=int, default=100, help='EarlyStopping patience (epochs without improvement)')
-    parser.add_argument('--save-period', type=int, default=10, help='Save checkpoint every x epochs (disabled if < 1)')
+    parser.add_argument('--save-period', type=int, default=50, help='Save checkpoint every x epochs (disabled if < 1)')
     parser.add_argument('--cache', type=str, nargs='?', const='ram', help='image --cache ram/disk')
     parser.add_argument('--image-weights', action='store_true', help='use weighted image selection for training')
     
