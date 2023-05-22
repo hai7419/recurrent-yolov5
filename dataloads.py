@@ -62,14 +62,14 @@ class yolodateset(Dataset):
          
         
 
-        print(f'lab file is {self.im_labs[0]}')
-        print(f'lab file is {self.im_labs[1]}')
+        # print(f'lab file is {self.im_labs[0]}')
+        # print(f'lab file is {self.im_labs[1]}')
        
-        print(f'im file is {self.im_files[0]}')
-        print(f'im file is {self.im_files[1]}')
+        # print(f'im file is {self.im_files[0]}')
+        # print(f'im file is {self.im_files[1]}')
         
-        print(f'labels 0 is {self.lab_files[0]}')
-        print(f'labels 1 is {self.lab_files[1]}')
+        # print(f'labels 0 is {self.lab_files[0]}')
+        # print(f'labels 1 is {self.lab_files[1]}')
 
 
         cache_path = Path(self.im_labs[0]).parent.with_suffix('.cache')
@@ -142,9 +142,9 @@ class yolodateset(Dataset):
             # fcn = self.load_img
             # results = ThreadPool(NUM_THREADS).imap(fcn, range(n))
             # pbar = tqdm(enumerate(results), total=n, bar_format=TQDM_BAR_FORMAT)
-            print(f'n is {n}')
+            # print(f'n is {n}')
             for i in range(n):
-                print(f'n is {i},im file is {self.im_files[i]} lab file is {self.im_labs[i]}')
+                # print(f'n is {i},im file is {self.im_files[i]} lab file is {self.im_labs[i]}')
                 self.ims[i], self.im_hw0[i], self.im_hw[i] = self.load_img(i)  # im, hw_orig, hw_resized = load_image(self, i)
 
 
