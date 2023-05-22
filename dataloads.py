@@ -396,7 +396,7 @@ class yolodateset(Dataset):
         im,lb,shapes,aaa = zip(*data)
         for i,lab in enumerate(lb):
             lab[:,0] = i
-        return torch.stack(im,0) ,torch.cat(lb,0),shapes,torch.cat(aaa,0)
+        return torch.stack(im,0) ,torch.cat(lb,0),shapes,aaa
 
 
         
