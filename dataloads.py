@@ -542,11 +542,11 @@ def verify_image_label(args):
 #         while True:
 #             yield from iter(self.sampler)
 
-def seed_worker(worker_id):
-    # Set dataloader worker seed https://pytorch.org/docs/stable/notes/randomness.html#dataloader
-    worker_seed = torch.initial_seed() % 2 ** 32
-    np.random.seed(worker_seed)
-    random.seed(worker_seed)
+# def seed_worker(worker_id):
+#     # Set dataloader worker seed https://pytorch.org/docs/stable/notes/randomness.html#dataloader
+#     worker_seed = torch.initial_seed() % 2 ** 32
+#     np.random.seed(worker_seed)
+#     random.seed(worker_seed)
 
 
 def create_dataloader(
@@ -589,7 +589,7 @@ def create_dataloader(
                   sampler=None,
                   pin_memory=PIN_MEMORY,
                   collate_fn= yolodateset.collate_fn,
-                  worker_init_fn=seed_worker,
+                #   worker_init_fn=seed_worker,
                   generator=generator), dataset
 
 
