@@ -48,7 +48,7 @@ class yolodateset(Dataset):
         self.im_files = sorted(glob.glob(os.path.join(self.path,'*.jpg')))
         self.im_labs =  img2label_paths(self.im_files)
         self.lab_files = []
-        self.img = []
+        # self.img = []
         self.hyp = hyp
         self.rect = rect
         self.augment = augment
@@ -156,13 +156,14 @@ class yolodateset(Dataset):
         hyp = self.hyp
         mosaic = self.mosaic #and random.random() < hyp['mosaic']
         shapes = None
+        aaa = [index]
         if mosaic:
             img, labels = self.load_mosaic(index)
             shapes = None
 
         else:
 
-            print(f'rect index is {index}')
+            
             img, (h0,w0),(h, w) = self.load_img(index)
             shape = self.batch_shapes[self.batch[index]] if self.rect   else (self.im_size,self.im_size)
             img,r,dw,dh = letterBox(im=img,new_shape=shape,auto=False)
@@ -202,7 +203,7 @@ class yolodateset(Dataset):
         # if index <4:
         #         print(f'index {index} labels_out is {labels_out}')
 
-        return torch.from_numpy(img),labels_out,shapes
+        return torch.from_numpy(img),labels_out,shapes,aaa
     
     
     def check_cache_ram(self,safety_margin=0.1):
@@ -392,10 +393,10 @@ class yolodateset(Dataset):
         return y
     @staticmethod
     def collate_fn(data):
-        im,lb,shapes = zip(*data)
+        im,lb,shapes,aaa = zip(*data)
         for i,lab in enumerate(lb):
             lab[:,0] = i
-        return torch.stack(im,0) ,torch.cat(lb,0),shapes
+        return torch.stack(im,0) ,torch.cat(lb,0),shapes,torch.cat(aaa,0)
 
 
         
