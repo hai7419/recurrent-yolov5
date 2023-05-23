@@ -52,7 +52,7 @@ class yolodateset(Dataset):
         self.hyp = hyp
         self.rect = rect
         self.augment = augment
-        self.mosaic =  False #augment and not rect
+        self.mosaic =  augment and not rect
         self.mosaic_border = [-img_size // 2, -img_size // 2]
         self.stride = stride
         
@@ -329,12 +329,13 @@ class yolodateset(Dataset):
         # img4, labels4, segments4 = copy_paste(img4, labels4, segments4, p=self.hyp['copy_paste'])
         img4, labels4 = randon_perspective(img4,
                                            labels4,
-                                           degrees=self.hyp['degrees'],# degrees=self.hyp['degrees'],
-                                           translate=self.hyp['translate'],
-                                           scale=self.hyp['scale'],
-                                           shear=self.hyp['shear'],
-                                           perspective=self.hyp['perspective'],
-                                           border=self.mosaic_border)  # border to remove
+                                           degrees=0,   #self.hyp['degrees'],# degrees=self.hyp['degrees'],
+                                           translate=0, # self.hyp['translate'],
+                                           scale=0,#self.hyp['scale'],
+                                           shear=0,#self.hyp['shear'],
+                                           perspective=0,#self.hyp['perspective'],
+                                           border=self.mosaic_border
+                                           )  # border to remove
 
         return img4, labels4
     
