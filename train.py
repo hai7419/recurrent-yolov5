@@ -239,12 +239,12 @@ def train(hyp, opt, device):
         scheduler.step()
         ema.update_attr(model,include=['yaml', 'nc', 'hyp', 'names', 'stride', 'class_weights'])
         
-        if epoch == 10:
-            pass
-        if epoch == 50:
-            pass
-        if epoch == 80:
-            pass
+        # if epoch == 10:
+        #     pass
+        # if epoch == 50:
+        #     pass
+        # if epoch == 80:
+        #     pass
 
         final_epoch = (epoch+1 ==epochs) or stopper.possible_stop
         with torch.inference_mode():
