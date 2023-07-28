@@ -72,7 +72,7 @@ def check_dataset(path):
         
         # 'train':os.path.join(path.parents[0],'datasets\\pcb\\images\\train'),
         # 'val':os.path.join(path.parents[0],'datasets\\pcb\\images\\val'),
-        'test':None,
+        # 'test':None,
         'names':{0:'missing_hole',1:'mouse_bite',2:'open_circuit',3:'short',4:'spur',5:'spurious_copper'},
         'nc':6
     }

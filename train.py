@@ -31,12 +31,12 @@ def parse_opt():
     parser.add_argument('--hyp', type=str, default=ROOT/'hyp.scratch.yaml')
     parser.add_argument('--project',type=str,default=ROOT/'run/train',help='save to project name')
     parser.add_argument('--resume', nargs='?', const=True, default=False, help='resume most recent training')
-    parser.add_argument('--epochs',type=int,default=500,help='total training epochs')
+    parser.add_argument('--epochs',type=int,default=300,help='total training epochs')
     parser.add_argument('--imgsz',type=int,default=640,help='train val image size pixels')
     parser.add_argument('--batch_size',type=int,default=2,help='total batch size')
     parser.add_argument('--workers',type=int,default=1,help='max dataloader workers')
     parser.add_argument('--exist_ok',action='store_true',help='existing project name ok,do not increment')
-    parser.add_argument('--data',type=str,default=ROOT/'data/coco128.yaml',help='dataset.yaml path')
+    # parser.add_argument('--data',type=str,default=ROOT/'data/coco128.yaml',help='dataset.yaml path')
     parser.add_argument('--optimizer', type=str,choices=['SGD','Adam','AdamW'],default='SGD',help='optimizer')
     parser.add_argument('--rect',action='store_true',help='rectangular training')
     parser.add_argument('--label-smoothing',type=float,default=0.0,help='label smoothing epsilon')
@@ -153,14 +153,14 @@ def train(hyp, opt, device):
 
     scheduler.last_epoch = start_epoch - 1
 
-    scaler = torch.cuda.amp.GradScaler(enabled=False)
+    # scaler = torch.cuda.amp.GradScaler(enabled=False)
 
     stopper,stop = EarlyStopping(patience=opt.patience), False
     computeloss = ComputeLoss(model,autobalance=False)
     last_opt_step = -1
     
     
-    wandb.init(project = "yolov5-augment")
+    wandb.init(project = "yolov5-pcb-augment")
     
     for epoch in range(start_epoch,epochs):
         model.train()
@@ -270,7 +270,7 @@ def train(hyp, opt, device):
             
 
         fi = fitness(np.array(results).reshape(1,-1))
-        stop = stopper(epoch=epoch,fitness=fi)
+        # stop = stopper(epoch=epoch,fitness=fi)
 
         if fi > best_fitness:
             best_fitness = fi

@@ -1,0 +1,124 @@
+2023-07-28 11:53:49,496 INFO    StreamThr :17344 [internal.py:wandb_internal():86] W&B internal server running at pid: 17344, started at: 2023-07-28 11:53:49.493412
+2023-07-28 11:53:49,524 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status
+2023-07-28 11:53:49,536 INFO    WriterThread:17344 [datastore.py:open_for_write():85] open: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\run-3esehtpf.wandb
+2023-07-28 11:53:49,540 DEBUG   SenderThread:17344 [sender.py:send():375] send: header
+2023-07-28 11:53:49,840 DEBUG   SenderThread:17344 [sender.py:send():375] send: run
+2023-07-28 11:53:50,730 INFO    SenderThread:17344 [dir_watcher.py:__init__():219] watching files in: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files
+2023-07-28 11:53:50,731 INFO    SenderThread:17344 [sender.py:_start_run_threads():1124] run started: 3esehtpf with start time 1690516429.467478
+2023-07-28 11:53:50,731 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: summary_record
+2023-07-28 11:53:50,732 INFO    SenderThread:17344 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-07-28 11:53:50,733 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: check_version
+2023-07-28 11:53:50,734 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: check_version
+2023-07-28 11:53:51,471 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: run_start
+2023-07-28 11:53:51,507 DEBUG   HandlerThread:17344 [system_info.py:__init__():31] System info init
+2023-07-28 11:53:51,507 DEBUG   HandlerThread:17344 [system_info.py:__init__():46] System info init done
+2023-07-28 11:53:51,507 INFO    HandlerThread:17344 [system_monitor.py:start():181] Starting system monitor
+2023-07-28 11:53:51,516 INFO    HandlerThread:17344 [system_monitor.py:probe():201] Collecting system info
+2023-07-28 11:53:51,516 INFO    SystemMonitor:17344 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2023-07-28 11:53:51,518 DEBUG   HandlerThread:17344 [system_info.py:probe():195] Probing system
+2023-07-28 11:53:51,522 DEBUG   HandlerThread:17344 [system_info.py:_probe_git():180] Probing git
+2023-07-28 11:53:51,541 INFO    SystemMonitor:17344 [interfaces.py:start():190] Started cpu monitoring
+2023-07-28 11:53:51,567 INFO    SystemMonitor:17344 [interfaces.py:start():190] Started disk monitoring
+2023-07-28 11:53:51,584 INFO    SystemMonitor:17344 [interfaces.py:start():190] Started memory monitoring
+2023-07-28 11:53:51,589 INFO    SystemMonitor:17344 [interfaces.py:start():190] Started network monitoring
+2023-07-28 11:53:51,768 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\wandb-summary.json
+2023-07-28 11:53:51,857 DEBUG   HandlerThread:17344 [system_info.py:_probe_git():188] Probing git done
+2023-07-28 11:53:51,858 DEBUG   HandlerThread:17344 [system_info.py:probe():240] Probing system done
+2023-07-28 11:53:51,858 DEBUG   HandlerThread:17344 [system_monitor.py:probe():210] {'os': 'Windows-10-10.0.19045-SP0', 'python': '3.10.10', 'heartbeatAt': '2023-07-28T03:53:51.518784', 'startedAt': '2023-07-28T03:53:49.331841', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': 'd:\\python\\yolov5\\recurrent-yolov5\\train.py', 'codePath': 'train.py', 'git': {'remote': 'https://github.com/hai7419/recurrent-yolov5.git', 'commit': '2f497ad30943feb5e526622175fb71827f6bf6db'}, 'email': 'wangzhenxia18@163.com', 'root': 'D:/python/yolov5/recurrent-yolov5', 'host': 'LAPTOP-LLEFF02D', 'username': 'wzx', 'executable': 'C:\\Users\\wzx\\anaconda3\\envs\\wzx\\python.exe', 'cpu_count': 2, 'cpu_count_logical': 4, 'cpu_freq': {'current': 2703.0, 'min': 0.0, 'max': 2904.0}, 'cpu_freq_per_core': [{'current': 2703.0, 'min': 0.0, 'max': 2904.0}], 'disk': {'total': 919.8339805603027, 'used': 795.1040382385254}, 'memory': {'total': 7.887916564941406}}
+2023-07-28 11:53:51,858 INFO    HandlerThread:17344 [system_monitor.py:probe():211] Finished collecting system info
+2023-07-28 11:53:51,858 INFO    HandlerThread:17344 [system_monitor.py:probe():214] Publishing system info
+2023-07-28 11:53:51,859 DEBUG   HandlerThread:17344 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2023-07-28 11:53:51,863 DEBUG   HandlerThread:17344 [system_info.py:_save_pip():67] Saving pip packages done
+2023-07-28 11:53:51,863 DEBUG   HandlerThread:17344 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2023-07-28 11:53:51,872 ERROR   HandlerThread:17344 [system_info.py:_save_conda():85] Error saving conda packages: [WinError 2] 系统找不到指定的文件。
+Traceback (most recent call last):
+  File "C:\Users\wzx\anaconda3\envs\wzx\lib\site-packages\wandb\sdk\internal\system\system_info.py", line 81, in _save_conda
+    subprocess.call(
+  File "C:\Users\wzx\anaconda3\envs\wzx\lib\subprocess.py", line 345, in call
+    with Popen(*popenargs, **kwargs) as p:
+  File "C:\Users\wzx\anaconda3\envs\wzx\lib\subprocess.py", line 971, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "C:\Users\wzx\anaconda3\envs\wzx\lib\subprocess.py", line 1440, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+  File "c:\Users\wzx\.vscode\extensions\ms-python.python-2023.12.0\pythonFiles\lib\python\debugpy\_vendored\pydevd\_pydev_bundle\pydev_monkey.py", line 901, in new_CreateProcess
+    return getattr(_subprocess, original_name)(app_name, cmd_line, *args)
+FileNotFoundError: [WinError 2] 系统找不到指定的文件。
+2023-07-28 11:53:51,896 DEBUG   HandlerThread:17344 [system_info.py:_save_conda():86] Saving conda packages done
+2023-07-28 11:53:51,900 INFO    HandlerThread:17344 [system_monitor.py:probe():216] Finished publishing system info
+2023-07-28 11:53:51,984 DEBUG   SenderThread:17344 [sender.py:send():375] send: files
+2023-07-28 11:53:51,985 INFO    SenderThread:17344 [sender.py:_save_file():1378] saving file wandb-metadata.json with policy now
+2023-07-28 11:53:52,028 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: stop_status
+2023-07-28 11:53:52,030 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: stop_status
+2023-07-28 11:53:52,396 DEBUG   SenderThread:17344 [sender.py:send():375] send: telemetry
+2023-07-28 11:53:52,769 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\wandb-metadata.json
+2023-07-28 11:53:52,769 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\conda-environment.yaml
+2023-07-28 11:53:52,770 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\requirements.txt
+2023-07-28 11:53:53,688 INFO    wandb-upload_0:17344 [upload_job.py:push():137] Uploaded file C:\Users\wzx\AppData\Local\Temp\tmpznx3i5xtwandb\i0xw87d2-wandb-metadata.json
+2023-07-28 11:53:55,433 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:00,471 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:03,878 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\output.log
+2023-07-28 11:54:04,655 DEBUG   SenderThread:17344 [sender.py:send():375] send: files
+2023-07-28 11:54:04,655 INFO    SenderThread:17344 [sender.py:_save_file():1378] saving file media\images\train images_0_0554707a2f7bf57e2a04.png with policy now
+2023-07-28 11:54:04,657 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: partial_history
+2023-07-28 11:54:04,661 DEBUG   SenderThread:17344 [sender.py:send():375] send: history
+2023-07-28 11:54:04,662 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: summary_record
+2023-07-28 11:54:04,665 INFO    SenderThread:17344 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-07-28 11:54:04,887 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\wandb-summary.json
+2023-07-28 11:54:04,887 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\media\images\train images_0_0554707a2f7bf57e2a04.png
+2023-07-28 11:54:04,887 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\media
+2023-07-28 11:54:04,888 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\media\images
+2023-07-28 11:54:04,931 DEBUG   SenderThread:17344 [sender.py:send():375] send: files
+2023-07-28 11:54:04,932 INFO    SenderThread:17344 [sender.py:_save_file():1378] saving file media\images\train images_1_e8a8c073adaa0406bc1c.png with policy now
+2023-07-28 11:54:04,933 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: partial_history
+2023-07-28 11:54:04,936 DEBUG   SenderThread:17344 [sender.py:send():375] send: history
+2023-07-28 11:54:04,937 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: summary_record
+2023-07-28 11:54:04,938 INFO    SenderThread:17344 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-07-28 11:54:05,900 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\wandb-summary.json
+2023-07-28 11:54:05,900 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\output.log
+2023-07-28 11:54:05,901 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\media\images\train images_1_e8a8c073adaa0406bc1c.png
+2023-07-28 11:54:05,901 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\media\images
+2023-07-28 11:54:05,945 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:06,698 INFO    wandb-upload_0:17344 [upload_job.py:push():137] Uploaded file C:\Users\wzx\AppData\Local\Temp\tmpznx3i5xtwandb\9k4714c4-media/images/train images_0_0554707a2f7bf57e2a04.png
+2023-07-28 11:54:07,035 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: stop_status
+2023-07-28 11:54:07,035 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: stop_status
+2023-07-28 11:54:07,829 INFO    wandb-upload_1:17344 [upload_job.py:push():137] Uploaded file C:\Users\wzx\AppData\Local\Temp\tmpznx3i5xtwandb\yrsh7rjl-media/images/train images_1_e8a8c073adaa0406bc1c.png
+2023-07-28 11:54:09,112 DEBUG   SenderThread:17344 [sender.py:send():375] send: files
+2023-07-28 11:54:09,112 INFO    SenderThread:17344 [sender.py:_save_file():1378] saving file media\images\train images_2_51e5f2a58dbe93de7947.png with policy now
+2023-07-28 11:54:09,113 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: partial_history
+2023-07-28 11:54:09,116 DEBUG   SenderThread:17344 [sender.py:send():375] send: history
+2023-07-28 11:54:09,117 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: summary_record
+2023-07-28 11:54:09,119 INFO    SenderThread:17344 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-07-28 11:54:09,403 DEBUG   SenderThread:17344 [sender.py:send():375] send: files
+2023-07-28 11:54:09,403 INFO    SenderThread:17344 [sender.py:_save_file():1378] saving file media\images\train images_3_1a33bd7c14c88d5e9c5c.png with policy now
+2023-07-28 11:54:09,405 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: partial_history
+2023-07-28 11:54:09,413 DEBUG   SenderThread:17344 [sender.py:send():375] send: history
+2023-07-28 11:54:09,414 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: summary_record
+2023-07-28 11:54:09,415 INFO    SenderThread:17344 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-07-28 11:54:09,955 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\wandb-summary.json
+2023-07-28 11:54:09,955 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\output.log
+2023-07-28 11:54:09,956 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\media\images\train images_3_1a33bd7c14c88d5e9c5c.png
+2023-07-28 11:54:09,957 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_created():278] file/dir created: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\media\images\train images_2_51e5f2a58dbe93de7947.png
+2023-07-28 11:54:09,957 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\media\images
+2023-07-28 11:54:11,004 INFO    wandb-upload_0:17344 [upload_job.py:push():137] Uploaded file C:\Users\wzx\AppData\Local\Temp\tmpznx3i5xtwandb\fs4ntiss-media/images/train images_2_51e5f2a58dbe93de7947.png
+2023-07-28 11:54:11,327 INFO    wandb-upload_1:17344 [upload_job.py:push():137] Uploaded file C:\Users\wzx\AppData\Local\Temp\tmpznx3i5xtwandb\xu74dj7t-media/images/train images_3_1a33bd7c14c88d5e9c5c.png
+2023-07-28 11:54:11,428 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:14,019 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\output.log
+2023-07-28 11:54:16,037 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\output.log
+2023-07-28 11:54:16,571 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:21,622 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:22,034 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: stop_status
+2023-07-28 11:54:22,035 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: stop_status
+2023-07-28 11:54:22,128 INFO    Thread-21 :17344 [dir_watcher.py:_on_file_modified():295] file/dir modified: D:\python\yolov5\recurrent-yolov5\wandb\run-20230728_115349-3esehtpf\files\config.yaml
+2023-07-28 11:54:27,499 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:32,528 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:37,038 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: stop_status
+2023-07-28 11:54:37,038 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: stop_status
+2023-07-28 11:54:38,375 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:43,415 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:48,436 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:51,590 DEBUG   SystemMonitor:17344 [system_monitor.py:_start():159] Starting system metrics aggregation loop
+2023-07-28 11:54:51,593 DEBUG   SenderThread:17344 [sender.py:send():375] send: stats
+2023-07-28 11:54:52,063 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: stop_status
+2023-07-28 11:54:52,063 DEBUG   SenderThread:17344 [sender.py:send_request():402] send_request: stop_status
+2023-07-28 11:54:53,473 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
+2023-07-28 11:54:58,553 DEBUG   HandlerThread:17344 [handler.py:handle_request():144] handle_request: status_report
